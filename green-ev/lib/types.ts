@@ -1,0 +1,84 @@
+// Enums
+export enum ConnectorType {
+  SAEJ1772 = 'SAEJ1772',
+  MENNEKES = 'MENNEKES',
+  CHADEMO = 'CHADEMO',
+  CCS = 'CCS'
+}
+
+export enum UserRole {
+  USER = 'USER',
+  OPERATOR = 'OPERATOR'
+}
+
+export enum ChargingVelocity {
+  NORMAL = 'NORMAL',
+  FAST = 'FAST',
+  FASTPP = 'FASTPP'
+}
+
+export enum ChargingSpotState {
+  OCCUPIED = 'OCCUPIED',
+  FREE = 'FREE',
+  OUT_OF_SERVICE = 'OUT_OF_SERVICE'
+}
+
+// Interfaces
+export interface Vehicle {
+  id?: number;
+  brand: string;
+  model: string;
+  licensePlate: string;
+  connectorType: ConnectorType;
+}
+
+export interface User {
+  id?: number;
+  name: string;
+  email: string;
+  password: string;
+  role?: UserRole;
+}
+
+export interface ChargingStation {
+  id?: number;
+  name: string;
+  lat: number;
+  lon: number;
+  operator?: User;
+  photoUrl?: string;
+}
+
+export interface ChargingSpot {
+  id?: number;
+  station?: ChargingStation;
+  powerKw: number;
+  pricePerKwh: number;
+  chargingVelocity?: ChargingVelocity;
+  connectorType?: ConnectorType;
+  state?: ChargingSpotState;
+}
+
+export interface Session {
+  id?: number;
+  uuid: string;
+  vehicle?: Vehicle;
+  chargingSpot?: ChargingSpot;
+  startTime: string; // ISO date-time string
+  duration?: number;
+  totalCost?: number;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  id: number;
+  name: string;
+  email: string;
+  role: UserRole;
+  token: string;
+  expires: number;
+} 
