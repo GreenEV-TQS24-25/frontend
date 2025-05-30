@@ -1,16 +1,28 @@
 FROM oven/bun:alpine AS base
 
 FROM node:21-bookworm AS node_with_bun
-RUN npm install -g bun
+RUN npm install -g --ignore-scripts bun
 
 # Install dependencies
 FROM node_with_bun AS builder
 WORKDIR /frontend
 
-COPY . .
-RUN bun install
-RUN bun run build
+# Copy only package files first to leverage Docker cache
+COPY package.json bun.lockb ./
+RUN bun install --frozen-lockfile
 
+# Copy only necessary source files
+COPY public ./public
+COPY app ./app
+COPY components ./components
+COPY lib ./lib
+COPY next.config.js ./
+COPY tsconfig.json ./
+COPY tailwind.config.ts ./
+COPY postcss.config.js ./
+
+# Build the application
+RUN bun run build
 
 EXPOSE 3000
 ENV PORT 3000
