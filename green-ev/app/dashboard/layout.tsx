@@ -88,9 +88,6 @@ export default function DashboardLayout({
       {/* Overlay for mobile sidebar */}
       {isSidebarOpen && (
         <button
-          type="button"
-          role="button"
-          aria-label="Close sidebar"
           tabIndex={0}
           className="fixed inset-0 bg-black/50 lg:hidden z-40 cursor-pointer"
           onClick={handleOverlayClick}
