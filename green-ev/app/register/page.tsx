@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
-import { register } from '@/lib/api'
+import { userApi } from '@/lib/api'
 import { toast } from 'sonner'
 
 export default function RegisterPage() {
@@ -23,7 +23,7 @@ export default function RegisterPage() {
     setIsLoading(true)
 
     try {
-      const response = await register(formData)
+      const response = await userApi.register(formData)
       
       // Store the token in a cookie
       document.cookie = `token=${response.token}; path=/`
