@@ -7,9 +7,9 @@ import { useRouter, usePathname } from 'next/navigation'
 
 export default function DashboardLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode
-}) {
+}>) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
@@ -17,6 +17,16 @@ export default function DashboardLayout({
   const handleLogout = () => {
     document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT'
     router.push('/login')
+  }
+
+  const handleOverlayClick = () => {
+    setIsSidebarOpen(false)
+  }
+
+  const handleOverlayKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      setIsSidebarOpen(false)
+    }
   }
 
   return (
@@ -77,9 +87,14 @@ export default function DashboardLayout({
 
       {/* Overlay for mobile sidebar */}
       {isSidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 lg:hidden z-40"
-          onClick={() => setIsSidebarOpen(false)}
+        <button
+          type="button"
+          role="button"
+          aria-label="Close sidebar"
+          tabIndex={0}
+          className="fixed inset-0 bg-black/50 lg:hidden z-40 cursor-pointer"
+          onClick={handleOverlayClick}
+          onKeyDown={handleOverlayKeyDown}
         />
       )}
     </div>

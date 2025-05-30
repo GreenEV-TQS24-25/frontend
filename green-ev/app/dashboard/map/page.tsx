@@ -4,7 +4,6 @@ import { useEffect, useState, useMemo } from 'react'
 import dynamic from 'next/dynamic'
 import { ChargingStation } from '@/lib/types'
 import { chargingStationApi } from '@/lib/api'
-import { Card, CardContent } from '@/components/ui/card'
 import 'leaflet/dist/leaflet.css'
 
 // Fix for default marker icon
