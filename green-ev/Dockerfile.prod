@@ -24,12 +24,10 @@ COPY postcss.config.js ./
 # Build the application
 RUN bun run build
 
-# Create a non-root user
+# Create non-root user and set permissions
 RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 nextjs
-
-# Set proper permissions
-RUN chown -R nextjs:nodejs /frontend
+    adduser --system --uid 1001 nextjs && \
+    chown -R nextjs:nodejs /frontend
 
 # Switch to non-root user
 USER nextjs
