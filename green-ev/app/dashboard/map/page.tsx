@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import dynamic from 'next/dynamic'
 import { StationsSpots, ConnectorType } from '@/lib/types'
 import { chargingStationApi } from '@/lib/api'
@@ -8,7 +8,6 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import React from 'react'
 
 // Dynamically import Leaflet components to avoid SSR issues
 const MapContainer = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false })
@@ -80,7 +79,7 @@ export default function MapPage() {
     return 'green';
   }
 
-  const filteredStations = React.useMemo(() => {
+  const filteredStations = useMemo(() => {
     return stations.filter((station) => {
       const matchesConnectors =
         selectedConnectors.length === 0 ||
