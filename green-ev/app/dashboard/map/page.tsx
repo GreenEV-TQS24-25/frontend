@@ -61,7 +61,7 @@ export default function MapPage() {
     fetchStations()
 
     // Set up polling every minute
-    const intervalId = setInterval(fetchStations, 60000) // 60000 ms = 1 minute
+    const intervalId = setInterval(fetchStations, 60000)
 
     // Cleanup interval on component unmount
     return () => {
