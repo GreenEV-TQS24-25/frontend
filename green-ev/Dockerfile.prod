@@ -1,34 +1,16 @@
 FROM oven/bun:alpine AS base
 
 FROM node:21-bookworm AS node_with_bun
-RUN npm install -g --ignore-scripts bun
+RUN npm install -g bun
 
 # Install dependencies
 FROM node_with_bun AS builder
 WORKDIR /frontend
 
-# Copy only package files first to leverage Docker cache
-COPY package.json bun.lockb ./
-RUN bun install --frozen-lockfile
+COPY . .
+RUN bun install
+RUN bun run build
 
-# Copy only necessary source files
-COPY public ./public
-COPY app ./app
-COPY components ./components
-COPY lib ./lib
-COPY next.config.js ./
-COPY tsconfig.json ./
-COPY tailwind.config.ts ./
-COPY postcss.config.js ./
-
-# Build the application and set up user
-RUN bun run build && \
-    addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 nextjs && \
-    chown -R nextjs:nodejs /frontend
-
-# Switch to non-root user
-USER nextjs
 
 EXPOSE 3000
 ENV PORT 3000
