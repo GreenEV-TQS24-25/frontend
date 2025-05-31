@@ -62,4 +62,9 @@ export interface LoginResponse {
   role: UserRole;
   token: string;
   expires: number;
+}
+
+export interface StationsSpots {
+  chargingStation: ChargingStation;
+  spots: ChargingSpot[];
 } 

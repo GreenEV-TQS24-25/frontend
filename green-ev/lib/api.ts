@@ -5,7 +5,8 @@ import {
   ChargingSpot, 
   Session, 
   LoginRequest, 
-  LoginResponse 
+  LoginResponse,
+  StationsSpots
 } from './types'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001/api/v1'
@@ -132,7 +133,7 @@ export const userApi = {
 
 // Charging Station API
 export const chargingStationApi = {
-  getAll: async (): Promise<ChargingStation[]> => {
+  getAll: async (): Promise<StationsSpots[]> => {
     const response = await fetch(`${API_URL}/public/charging-stations/all`)
     if (!response.ok) throw new Error('Failed to fetch charging stations')
     return response.json()
