@@ -6,13 +6,13 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
-import { userApi } from '@/lib/api'
+import { useUser } from '@/lib/contexts/user-context'
 import { toast } from 'sonner'
 
 export default function LoginPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [isLoading, setIsLoading] = useState(false)
+  const { login, loading, error } = useUser()
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -20,22 +20,13 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
-
     try {
-      const response = await userApi.login(formData)
-      
-      // Store the token in a cookie
-      document.cookie = `token=${response.token}; path=/`
-      
-      // Redirect to the original requested page or dashboard
+      await login(formData.email, formData.password)
       const from = searchParams.get('from') ?? '/dashboard'
       router.push(from)
     } catch (error: unknown) {
       console.error('Login error:', error)
       toast.error('Invalid email or password')
-    } finally {
-      setIsLoading(false)
     }
   }
 
@@ -72,8 +63,8 @@ export default function LoginPage() {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col pt-4 space-y-4">
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Signing in...' : 'Sign in'}
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? 'Signing in...' : 'Sign in'}
             </Button>
             <Button
               type="button"

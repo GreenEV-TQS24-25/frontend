@@ -25,16 +25,26 @@ async function fetchApi<T>(
     ...options.headers,
   }
 
+  console.log(`Making API request to ${endpoint}`, { headers, options })
+
   const response = await fetch(`${API_URL}${endpoint}`, {
     ...options,
     headers,
   })
 
   if (!response.ok) {
-    throw new Error(`API request failed: ${response.statusText}`)
+    const errorData = await response.json().catch(() => null)
+    console.error('API request failed:', {
+      status: response.status,
+      statusText: response.statusText,
+      errorData
+    })
+    throw new Error(errorData?.detail || response.statusText)
   }
 
-  return response.json()
+  const data = await response.json()
+  console.log(`API response from ${endpoint}:`, data)
+  return data
 }
 
 // Vehicle API
