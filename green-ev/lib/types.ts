@@ -1,5 +1,11 @@
 // Enums
-export type ConnectorType = 'SAEJ1772' | 'MENNEKES' | 'CHADEMO' | 'CCS'
+export enum ConnectorType {
+  SAEJ1772 = 'SAEJ1772',
+  MENNEKES = 'MENNEKES',
+  CHADEMO = 'CHADEMO',
+  CCS = 'CCS'
+}
+
 export type UserRole = 'USER' | 'OPERATOR'
 export type ChargingVelocity = 'NORMAL' | 'FAST' | 'FASTPP'
 export type ChargingSpotState = 'OCCUPIED' | 'FREE' | 'OUT_OF_SERVICE'
