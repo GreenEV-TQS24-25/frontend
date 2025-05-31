@@ -21,9 +21,9 @@ COPY tsconfig.json ./
 COPY tailwind.config.ts ./
 COPY postcss.config.js ./
 
-# Build the application
-# Create non-root user and set permissions
-RUN bun run build; addgroup --system --gid 1001 nodejs && \
+# Build the application and set up user
+RUN bun run build && \
+    addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs && \
     chown -R nextjs:nodejs /frontend
 

@@ -1,27 +1,8 @@
 // Enums
-export enum ConnectorType {
-  SAEJ1772 = 'SAEJ1772',
-  MENNEKES = 'MENNEKES',
-  CHADEMO = 'CHADEMO',
-  CCS = 'CCS'
-}
-
-export enum UserRole {
-  USER = 'USER',
-  OPERATOR = 'OPERATOR'
-}
-
-export enum ChargingVelocity {
-  NORMAL = 'NORMAL',
-  FAST = 'FAST',
-  FASTPP = 'FASTPP'
-}
-
-export enum ChargingSpotState {
-  OCCUPIED = 'OCCUPIED',
-  FREE = 'FREE',
-  OUT_OF_SERVICE = 'OUT_OF_SERVICE'
-}
+export type ConnectorType = 'SAEJ1772' | 'MENNEKES' | 'CHADEMO' | 'CCS'
+export type UserRole = 'USER' | 'OPERATOR'
+export type ChargingVelocity = 'NORMAL' | 'FAST' | 'FASTPP'
+export type ChargingSpotState = 'OCCUPIED' | 'FREE' | 'OUT_OF_SERVICE'
 
 // Interfaces
 export interface Vehicle {
@@ -81,4 +62,9 @@ export interface LoginResponse {
   role: UserRole;
   token: string;
   expires: number;
+}
+
+export interface StationsSpots {
+  chargingStation: ChargingStation;
+  spots: ChargingSpot[];
 } 
