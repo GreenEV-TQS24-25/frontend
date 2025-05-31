@@ -29,7 +29,7 @@ export default function LoginPage() {
       document.cookie = `token=${response.token}; path=/`
       
       // Redirect to the original requested page or dashboard
-      const from = searchParams.get('from') || '/dashboard'
+      const from = searchParams.get('from') ?? '/dashboard'
       router.push(from)
     } catch (error: unknown) {
       console.error('Login error:', error)

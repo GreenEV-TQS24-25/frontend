@@ -8,8 +8,7 @@ import {
   LoginResponse 
 } from './types'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001'
-const API_BASE_URL = `${API_URL}/api/v1`
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001/api/v1'
 
 // Helper function to handle API requests
 async function fetchApi<T>(
@@ -24,7 +23,7 @@ async function fetchApi<T>(
     ...options.headers,
   }
 
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+  const response = await fetch(`${API_URL}${endpoint}`, {
     ...options,
     headers,
   })
@@ -38,100 +37,249 @@ async function fetchApi<T>(
 
 // Vehicle API
 export const vehicleApi = {
-  getAll: () => fetchApi<Vehicle[]>('/private/vehicles'),
-  create: (vehicle: Omit<Vehicle, 'id'>) => 
-    fetchApi<Vehicle>('/private/vehicles', {
+  getAll: async (): Promise<Vehicle[]> => {
+    const response = await fetch(`${API_URL}/private/vehicles`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    if (!response.ok) throw new Error('Failed to fetch vehicles')
+    return response.json()
+  },
+
+  create: async (vehicle: Vehicle): Promise<Vehicle> => {
+    const response = await fetch(`${API_URL}/private/vehicles`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
       body: JSON.stringify(vehicle),
-    }),
-  update: (vehicle: Vehicle) =>
-    fetchApi<Vehicle>('/private/vehicles', {
+    })
+    if (!response.ok) throw new Error('Failed to create vehicle')
+    return response.json()
+  },
+
+  update: async (vehicle: Vehicle): Promise<Vehicle> => {
+    const response = await fetch(`${API_URL}/private/vehicles`, {
       method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
       body: JSON.stringify(vehicle),
-    }),
-  delete: (vehicleId: number) =>
-    fetchApi<void>(`/private/vehicles/${vehicleId}`, {
+    })
+    if (!response.ok) throw new Error('Failed to update vehicle')
+    return response.json()
+  },
+
+  delete: async (vehicleId: number): Promise<void> => {
+    const response = await fetch(`${API_URL}/private/vehicles/${vehicleId}`, {
       method: 'DELETE',
-    }),
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    if (!response.ok) throw new Error('Failed to delete vehicle')
+  },
 }
 
 // User API
 export const userApi = {
-  login: (data: LoginRequest) =>
-    fetchApi<LoginResponse>('/public/user-table/login', {
+  login: async (credentials: LoginRequest): Promise<LoginResponse> => {
+    const response = await fetch(`${API_URL}/public/user-table/login`, {
       method: 'POST',
-      body: JSON.stringify(data),
-    }),
-  register: (data: LoginRequest) =>
-    fetchApi<LoginResponse>('/public/user-table', {
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(credentials),
+    })
+    if (!response.ok) throw new Error('Login failed')
+    return response.json()
+  },
+
+  register: async (user: User): Promise<LoginResponse> => {
+    const response = await fetch(`${API_URL}/public/user-table`, {
       method: 'POST',
-      body: JSON.stringify(data),
-    }),
-  update: (user: User) =>
-    fetchApi<User>('/private/user-table', {
-      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(user),
-    }),
-  delete: () =>
-    fetchApi<void>('/private/user-table', {
+    })
+    if (!response.ok) throw new Error('Registration failed')
+    return response.json()
+  },
+
+  update: async (user: User): Promise<User> => {
+    const response = await fetch(`${API_URL}/private/user-table`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+      body: JSON.stringify(user),
+    })
+    if (!response.ok) throw new Error('Update failed')
+    return response.json()
+  },
+
+  delete: async (): Promise<void> => {
+    const response = await fetch(`${API_URL}/private/user-table`, {
       method: 'DELETE',
-    }),
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    if (!response.ok) throw new Error('Delete failed')
+  },
 }
 
 // Charging Station API
 export const chargingStationApi = {
-  getAll: () => fetchApi<ChargingStation[]>('/public/charging-stations/all'),
-  getAllByOperator: () => fetchApi<ChargingStation[]>('/private/charging-stations'),
-  create: (station: Omit<ChargingStation, 'id'>) =>
-    fetchApi<ChargingStation>('/private/charging-stations', {
+  getAll: async (): Promise<ChargingStation[]> => {
+    const response = await fetch(`${API_URL}/public/charging-stations/all`)
+    if (!response.ok) throw new Error('Failed to fetch charging stations')
+    return response.json()
+  },
+
+  getByOperator: async (): Promise<ChargingStation[]> => {
+    const response = await fetch(`${API_URL}/private/charging-stations`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    if (!response.ok) throw new Error('Failed to fetch charging stations')
+    return response.json()
+  },
+
+  filterByConnectorType: async (connectorTypes: string[]): Promise<ChargingStation[]> => {
+    const params = new URLSearchParams()
+    connectorTypes.forEach(type => params.append('connectorTypeInputs', type))
+    const response = await fetch(`${API_URL}/public/charging-stations/filter?${params}`)
+    if (!response.ok) throw new Error('Failed to filter charging stations')
+    return response.json()
+  },
+
+  create: async (station: ChargingStation): Promise<ChargingStation> => {
+    const response = await fetch(`${API_URL}/private/charging-stations`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
       body: JSON.stringify(station),
-    }),
-  update: (station: ChargingStation) =>
-    fetchApi<ChargingStation>('/private/charging-stations', {
+    })
+    if (!response.ok) throw new Error('Failed to create charging station')
+    return response.json()
+  },
+
+  update: async (station: ChargingStation): Promise<ChargingStation> => {
+    const response = await fetch(`${API_URL}/private/charging-stations`, {
       method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
       body: JSON.stringify(station),
-    }),
-  delete: (id: number) =>
-    fetchApi<void>(`/private/charging-stations/${id}`, {
+    })
+    if (!response.ok) throw new Error('Failed to update charging station')
+    return response.json()
+  },
+
+  delete: async (id: number): Promise<void> => {
+    const response = await fetch(`${API_URL}/private/charging-stations/${id}`, {
       method: 'DELETE',
-    }),
-  filterByConnectorType: (connectorTypes: string[]) =>
-    fetchApi<ChargingStation[]>(`/public/charging-stations/filter?connectorTypeInputs=${connectorTypes.join(',')}`),
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    if (!response.ok) throw new Error('Failed to delete charging station')
+  },
 }
 
 // Charging Spot API
 export const chargingSpotApi = {
-  getAllByStation: (stationId: number) =>
-    fetchApi<ChargingSpot[]>(`/public/charging-spots/${stationId}`),
-  create: (spot: Omit<ChargingSpot, 'id'>) =>
-    fetchApi<ChargingSpot>('/private/charging-spots', {
+  getByStation: async (stationId: number): Promise<ChargingSpot[]> => {
+    const response = await fetch(`${API_URL}/public/charging-spots/${stationId}`)
+    if (!response.ok) throw new Error('Failed to fetch charging spots')
+    return response.json()
+  },
+
+  create: async (spot: ChargingSpot): Promise<ChargingSpot> => {
+    const response = await fetch(`${API_URL}/private/charging-spots`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
       body: JSON.stringify(spot),
-    }),
-  update: (spot: ChargingSpot) =>
-    fetchApi<ChargingSpot>('/private/charging-spots', {
+    })
+    if (!response.ok) throw new Error('Failed to create charging spot')
+    return response.json()
+  },
+
+  update: async (spot: ChargingSpot): Promise<ChargingSpot> => {
+    const response = await fetch(`${API_URL}/private/charging-spots`, {
       method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
       body: JSON.stringify(spot),
-    }),
-  delete: (id: number) =>
-    fetchApi<void>(`/private/charging-spots/${id}`, {
+    })
+    if (!response.ok) throw new Error('Failed to update charging spot')
+    return response.json()
+  },
+
+  delete: async (id: number): Promise<void> => {
+    const response = await fetch(`${API_URL}/private/charging-spots/${id}`, {
       method: 'DELETE',
-    }),
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    if (!response.ok) throw new Error('Failed to delete charging spot')
+  },
 }
 
 // Session API
 export const sessionApi = {
-  getAllByUser: () => fetchApi<Session[]>('/private/session'),
-  getAllByStation: (stationId: number) =>
-    fetchApi<Session[]>(`/private/session/station/${stationId}`),
-  create: (session: Omit<Session, 'id'>) =>
-    fetchApi<Session>('/private/session', {
+  getAll: async (): Promise<Session[]> => {
+    const response = await fetch(`${API_URL}/private/session`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    if (!response.ok) throw new Error('Failed to fetch sessions')
+    return response.json()
+  },
+
+  getByStation: async (stationId: number): Promise<Session[]> => {
+    const response = await fetch(`${API_URL}/private/session/station/${stationId}`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    if (!response.ok) throw new Error('Failed to fetch sessions')
+    return response.json()
+  },
+
+  create: async (session: Session): Promise<Session> => {
+    const response = await fetch(`${API_URL}/private/session`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
       body: JSON.stringify(session),
-    }),
-  delete: (sessionId: number) =>
-    fetchApi<void>(`/private/session/${sessionId}`, {
+    })
+    if (!response.ok) throw new Error('Failed to create session')
+    return response.json()
+  },
+
+  delete: async (sessionId: number): Promise<void> => {
+    const response = await fetch(`${API_URL}/private/session/${sessionId}`, {
       method: 'DELETE',
-    }),
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    if (!response.ok) throw new Error('Failed to delete session')
+  },
 } 

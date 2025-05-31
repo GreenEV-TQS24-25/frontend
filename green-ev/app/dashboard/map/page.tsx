@@ -2,8 +2,8 @@
 
 import { useEffect, useState, useMemo } from 'react'
 import dynamic from 'next/dynamic'
-import { ChargingStation } from '@/lib/types'
-import { chargingStationApi } from '@/lib/api'
+import { ChargingStation, ChargingSpot } from '@/lib/types'
+import { chargingStationApi, chargingSpotApi } from '@/lib/api'
 import 'leaflet/dist/leaflet.css'
 
 // Fix for default marker icon
@@ -44,21 +44,52 @@ const center = {
   lng: -9.1393,
 }
 
+interface StationWithSpots extends ChargingStation {
+  spots: ChargingSpot[];
+}
+
 export default function MapPage() {
-  const [stations, setStations] = useState<ChargingStation[]>([])
+  const [stations, setStations] = useState<StationWithSpots[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isMounted, setIsMounted] = useState(false)
 
-  // Create custom icon once (memoized)
-  const zapIcon = useMemo(() => {
-    return L.icon({
-      iconUrl: '/zap.svg', // Public folder path
-      iconSize: [30, 30], // Adjust size as needed
-      iconAnchor: [15, 30], // Point tip at position
-      popupAnchor: [0, -30], // Adjust popup position
+  // Create custom icons once (memoized)
+  const icons = useMemo(() => ({
+    red: L.icon({
+      iconUrl: '/zap-red.svg',
+      iconSize: [30, 30],
+      iconAnchor: [15, 30],
+      popupAnchor: [0, -30],
+      className: 'charging-station-marker'
+    }),
+    yellow: L.icon({
+      iconUrl: '/zap-yellow.svg',
+      iconSize: [30, 30],
+      iconAnchor: [15, 30],
+      popupAnchor: [0, -30],
+      className: 'charging-station-marker'
+    }),
+    green: L.icon({
+      iconUrl: '/zap-green.svg',
+      iconSize: [30, 30],
+      iconAnchor: [15, 30],
+      popupAnchor: [0, -30],
       className: 'charging-station-marker'
     })
-  }, [])
+  }), [])
+
+  const getStationIcon = (spots: ChargingSpot[]) => {
+    const totalSpots = spots.length
+    if (totalSpots === 0) return icons.red
+
+    const freeSpots = spots.filter(spot => spot.state === 'FREE').length
+    const freePercentage = (freeSpots / totalSpots) * 100
+    console.log(freePercentage)
+
+    if (freePercentage === 0) return icons.red
+    if (freePercentage <= 35) return icons.yellow
+    return icons.green
+  }
 
   useEffect(() => {
     setIsMounted(true)
@@ -67,8 +98,14 @@ export default function MapPage() {
   useEffect(() => {
     const loadStations = async () => {
       try {
-        const data = await chargingStationApi.getAll()
-        setStations(data)
+        const stationsData = await chargingStationApi.getAll()
+        const stationsWithSpots = await Promise.all(
+          stationsData.map(async (station) => {
+            const spots = await chargingSpotApi.getByStation(station.id!)
+            return { ...station, spots }
+          })
+        )
+        setStations(stationsWithSpots)
       } catch (error) {
         console.error('Error loading stations:', error)
       } finally {
@@ -80,15 +117,16 @@ export default function MapPage() {
   }, [])
 
   if (!isMounted || isLoading) {
-    return <div className="flex items-center justify-center h-screen">Loading stations...</div>
+    return <div className="flex items-center justify-center h-[calc(100vh-4rem)]">Loading stations...</div>
   }
 
   return (
-    <div className="h-screen">
+    <div className="h-[calc(100vh-4rem)] relative">
       <MapContainer
         center={center}
         zoom={12}
         style={{ height: '100%', width: '100%' }}
+        className="z-0"
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -99,8 +137,18 @@ export default function MapPage() {
           <Marker
             key={station.id}
             position={[station.lat, station.lon]}
-            icon={zapIcon}
+            icon={getStationIcon(station.spots)}
           >
+            <Popup>
+              <div className="p-2">
+                <h3 className="font-bold">{station.name}</h3>
+                <p>Total Spots: {station.spots.length}</p>
+                <p>Free Spots: {station.spots.filter(spot => spot.state === 'FREE').length}</p>
+                {station.operator && (
+                  <p>Operator: {station.operator.name}</p>
+                )}
+              </div>
+            </Popup>
           </Marker>
         ))}
 

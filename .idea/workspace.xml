@@ -5,8 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0a5a3e17-2041-4152-adfa-3b1ecbff40a3" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/green-ev/bun.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/green-ev/package-lock.json" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/frontend.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/green-ev/app/dashboard/layout.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/green-ev/app/dashboard/map/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/green-ev/next.config.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/green-ev/package-lock.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/green-ev/public/zap.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/green-ev/scripts/copy-leaflet-assets.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/green-ev/app/dashboard/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/green-ev/app/dashboard/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/green-ev/app/login/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/green-ev/app/login/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/green-ev/app/register/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/green-ev/app/register/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/green-ev/bun.lock" beforeDir="false" afterPath="$PROJECT_DIR$/green-ev/bun.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/green-ev/lib/api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/green-ev/lib/api.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/green-ev/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/green-ev/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,9 +46,9 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "GREEN-68-Create-Map",
+    "git-widget-placeholder": "Merging GREEN-441-CD",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/home/violeta/Downloads/PI-FindIt/client-app",
+    "last_opened_file_path": "/home/violeta/Downloads/TQS/GreenEV/control-room/frontend",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -64,10 +80,16 @@
       <updated>1747995747078</updated>
       <workItem from="1747995748891" duration="5327000" />
       <workItem from="1748302376393" duration="51000" />
+      <workItem from="1748626118442" duration="57000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+    <option name="exactExcludedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/green-ev/next.config.js" />
+      </list>
+    </option>
   </component>
 </project>
