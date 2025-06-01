@@ -3,7 +3,7 @@ export enum ConnectorType {
   SAEJ1772 = 'SAEJ1772',
   MENNEKES = 'MENNEKES',
   CHADEMO = 'CHADEMO',
-  CCS = 'CCS'
+  CCS = 'CCS',
 }
 
 export enum UserRole {

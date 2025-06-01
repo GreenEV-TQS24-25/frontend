@@ -19,51 +19,14 @@ const Popup = dynamic(() => import('react-leaflet').then(mod => mod.Popup), {ssr
 import 'leaflet/dist/leaflet.css'
 import {Icon, IconOptions} from 'leaflet'
 
-
-const CONNECTOR_TYPES = [
-    ConnectorType.SAEJ1772,
-    ConnectorType.MENNEKES,
-    ConnectorType.CHADEMO,
-    ConnectorType.CCS,
-] as const
-
 export default function MapPage() {
     const [stations, setStations] = useState<StationsSpots[]>([])
     const [loading, setLoading] = useState(true)
     const [mounted, setMounted] = useState(false)
     const [selectedConnectors, setSelectedConnectors] = useState<ConnectorType[]>([])
-    const [leafletLoaded, setLeafletLoaded] = useState(false)
-
-    const [icon, setIcon] = useState<((station: StationsSpots) => Icon<IconOptions>) | null>(null)
-
 
     useEffect(() => {
         setMounted(true)
-        import('leaflet').then(L => {
-            // Fix for default marker icon only on client-side
-            const DefaultIcon = L.icon({
-                iconUrl: '/marker-icon.png',
-                shadowUrl: '/marker-shadow.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41]
-            })
-
-            setIcon((station: StationsSpots) => {
-              return L.icon({
-                iconUrl: `/zap-${getIconColor(station)}.svg`,
-                iconSize: [32, 32],
-                iconAnchor: [16, 32],
-              })
-            })
-
-
-
-
-
-
-            L.Marker.prototype.options.icon = DefaultIcon
-            setLeafletLoaded(true)
-        })
 
         const fetchStations = async () => {
             try {
@@ -82,13 +45,29 @@ export default function MapPage() {
     }, [])
 
     const getIconColor = (station: StationsSpots) => {
-        const freeSpots = station.spots.filter(spot => spot.state === 'FREE').length;
+        let icon: Icon<IconOptions> = new Icon({
+            iconUrl: `/zap-red.svg`,
+            iconSize: [32, 32],
+            iconAnchor: [16, 32],
+        })
+        if (!station?.spots || !Array.isArray(station.spots) || station.spots.length === 0) {
+          return icon;
+        }
+        const freeSpots = station.spots.filter(spot => spot?.state === 'FREE').length;
         const totalSpots = station.spots.length;
         const freePercentage = (freeSpots / totalSpots) * 100;
 
-        if (freePercentage == 0) return 'red';
-        else if (freePercentage <= 35) return 'yellow';
-        return 'green';
+        let color = 'red';
+        if (freePercentage <= 35 && freePercentage > 0) color = 'yellow';
+        else if (freePercentage >= 35) color = 'green';
+
+        icon = new Icon({
+            iconUrl: `/zap-${color}.svg`,
+            iconSize: [32, 32],
+            iconAnchor: [16, 32],
+        })
+
+        return icon;
     }
 
     const filteredStations = useMemo(() => {
@@ -104,7 +83,7 @@ export default function MapPage() {
         })
     }, [stations, selectedConnectors])
 
-    if (!mounted || loading || !leafletLoaded) {
+    if (!mounted || loading ) {
         return (
             <div className="flex items-center justify-center h-full">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
@@ -122,7 +101,7 @@ export default function MapPage() {
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-2">
-                            {CONNECTOR_TYPES.map((type) => (
+                            {Object.values(ConnectorType).map((type) => (
                                 <div key={type} className="flex items-center space-x-2">
                                     <Checkbox
                                         id={type}
@@ -165,7 +144,7 @@ export default function MapPage() {
                                 station.chargingStation.lat,
                                 station.chargingStation.lon,
                             ]}
-                            icon={icon ? icon(station) : undefined}
+                            icon={getIconColor(station)}
                         >
                             <Popup>
                                 <Card className="w-[300px]">
