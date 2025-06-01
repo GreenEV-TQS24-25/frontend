@@ -9,6 +9,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { toast } from 'sonner'
+import { ArrowLeft } from 'lucide-react'
+import Link from 'next/link'
 
 export default function NewStationPage() {
   const router = useRouter()
@@ -42,7 +44,7 @@ export default function NewStationPage() {
 
   if (!user || user.role !== 'OPERATOR') {
     return (
-      <div className="p-6">
+      <div className="container mx-auto py-8 px-4">
         <Card>
           <CardContent className="pt-6">
             <p className="text-center text-gray-500">You don't have permission to create stations.</p>
@@ -53,10 +55,19 @@ export default function NewStationPage() {
   }
 
   return (
-    <div className="p-6">
-      <Card>
+    <div className="container mx-auto py-8 px-4">
+      <div className="flex items-center mb-8">
+        <Link href="/dashboard">
+          <Button variant="outline" className="mr-4 hover:bg-gray-100">
+            <ArrowLeft className="h-5 w-5"/>
+          </Button>
+        </Link>
+        <h1 className="text-3xl font-bold tracking-tight">Add New Station</h1>
+      </div>
+
+      <Card className="max-w-2xl mx-auto">
         <CardHeader>
-          <CardTitle>Add New Station</CardTitle>
+          <CardTitle>Station Details</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -107,13 +118,11 @@ export default function NewStationPage() {
             </div>
 
             <div className="flex justify-end gap-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => router.back()}
-              >
-                Cancel
-              </Button>
+              <Link href="/dashboard">
+                <Button type="button" variant="outline">
+                  Cancel
+                </Button>
+              </Link>
               <Button type="submit" disabled={loading}>
                 {loading ? 'Creating...' : 'Create Station'}
               </Button>
