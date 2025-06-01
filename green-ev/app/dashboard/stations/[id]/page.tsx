@@ -11,6 +11,127 @@ import { ArrowLeft, Plus, Pencil } from 'lucide-react'
 import Link from 'next/link'
 import { useUser } from '@/lib/contexts/user-context'
 
+// Common loading state component
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center h-full">
+    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
+  </div>
+)
+
+// Common error state component
+const ErrorState = ({ message, showBackButton = true }: { message: string; showBackButton?: boolean }) => (
+  <div className="flex flex-col items-center justify-center h-full">
+    <h1 className="text-2xl font-bold mb-4">{message}</h1>
+    {showBackButton && (
+      <Link href="/dashboard/map">
+        <Button variant="outline">
+          <ArrowLeft/>
+        </Button>
+      </Link>
+    )}
+  </div>
+)
+
+// Station header component
+const StationHeader = ({ 
+  stationName, 
+  stationId, 
+  isOperator 
+}: { 
+  stationName: string; 
+  stationId: string; 
+  isOperator: boolean 
+}) => (
+  <div className="flex items-center justify-between mb-8">
+    <div className="flex items-center">
+      <Link href="/dashboard/map">
+        <Button variant="outline" className="mr-1 hover:bg-gray-100">
+          <ArrowLeft/>
+        </Button>
+      </Link>
+      {isOperator && (
+        <Link href={`/dashboard/stations/${stationId}/edit`}>
+          <Button variant="outline" className="mr-2">
+            <Pencil/>
+          </Button>
+        </Link>
+      )}
+      <h1 className="text-3xl font-bold tracking-tight">{stationName}</h1>
+    </div>
+  </div>
+)
+
+// Station info card component
+const StationInfoCard = ({ 
+  stationInfo, 
+  freeSpots, 
+  totalSpots 
+}: { 
+  stationInfo: { lat: number; lon: number }; 
+  freeSpots: number; 
+  totalSpots: number 
+}) => {
+  const freePercentage = (freeSpots / totalSpots) * 100
+  const statusVariant = freePercentage === 0 ? "destructive" : freePercentage <= 35 ? "secondary" : "default"
+  const statusText = freePercentage === 0 ? "Full" : freePercentage <= 35 ? "Limited" : "Available"
+
+  return (
+    <div className="space-y-6 bg-white rounded-lg p-6 shadow-sm">
+      <div>
+        <p className="text-sm font-medium text-muted-foreground mb-1.5">Location</p>
+        <p className="text-lg">{`${stationInfo.lat}, ${stationInfo.lon}`}</p>
+      </div>
+      <div>
+        <p className="text-sm font-medium text-muted-foreground mb-1.5">Status</p>
+        <div className="flex items-center gap-3">
+          <Badge variant={statusVariant} className="px-2.5 py-0.5">
+            {statusText}
+          </Badge>
+          <span className="text-lg">{`${freeSpots} of ${totalSpots} spots available`}</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Spot card component
+const SpotCard = ({ 
+  spot, 
+  stationId, 
+  isOperator 
+}: { 
+  spot: ChargingSpot; 
+  stationId: string; 
+  isOperator: boolean 
+}) => (
+  <Card className="hover:shadow-md transition-shadow">
+    <CardContent className="pt-6">
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Badge variant={spot.state === 'FREE' ? "default" : "destructive"} className="px-2.5 py-0.5">
+              {spot.state}
+            </Badge>
+            {isOperator && (
+              <Link href={`/dashboard/stations/${stationId}/spots/${spot.id}/edit`}>
+                <Button variant="outline" size="sm">
+                  Edit
+                </Button>
+              </Link>
+            )}
+          </div>
+          <Badge variant="outline" className="px-2.5 py-0.5">
+            {spot.connectorType}
+          </Badge>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Spot ID: {spot.id}
+        </p>
+      </div>
+    </CardContent>
+  </Card>
+)
+
 export default function StationPage() {
   const params = useParams()
   const { user } = useUser()
@@ -35,84 +156,36 @@ export default function StationPage() {
   }, [params.id])
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
-      </div>
-    )
+    return <LoadingSpinner />
   }
 
   if (!spots.length) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full">
-        <h1 className="text-2xl font-bold mb-4">Station not found</h1>
-        <Link href="/dashboard/map">
-          <Button variant="outline">
-            <ArrowLeft/>
-          </Button>
-        </Link>
-      </div>
-    )
+    return <ErrorState message="Station not found" />
   }
 
   const freeSpots = spots.filter(spot => spot.state === 'FREE').length
   const totalSpots = spots.length
-  const freePercentage = (freeSpots / totalSpots) * 100
-
-  // Get station info from the first spot
   const stationInfo = spots[0].station
+  const isOperator = user?.role === UserRole.OPERATOR
 
   if (!stationInfo) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full">
-        <h1 className="text-2xl font-bold mb-4">Station information not available</h1>
-        <Link href="/dashboard/map">
-          <Button variant="outline">
-            <ArrowLeft/>
-          </Button>
-        </Link>
-      </div>
-    )
+    return <ErrorState message="Station information not available" />
   }
-
-  const isOperator = user?.role === UserRole.OPERATOR
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center">
-          <Link href="/dashboard/map">
-            <Button variant="outline" className="mr-1 hover:bg-gray-100">
-              <ArrowLeft/>
-            </Button>
-          </Link>
-          {isOperator && (
-          <Link href={`/dashboard/stations/${params.id}/edit`}>
-            <Button variant="outline" className="mr-2">
-              <Pencil/>
-            </Button>
-          </Link>
-        )}
-          <h1 className="text-3xl font-bold tracking-tight">{stationInfo.name}</h1>
-        </div>
-      </div>
+      <StationHeader 
+        stationName={stationInfo.name} 
+        stationId={params.id as string} 
+        isOperator={isOperator} 
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="space-y-6 bg-white rounded-lg p-6 shadow-sm">
-          <div>
-            <p className="text-sm font-medium text-muted-foreground mb-1.5">Location</p>
-            <p className="text-lg">{`${stationInfo.lat}, ${stationInfo.lon}`}</p>
-          </div>
-          <div>
-            <p className="text-sm font-medium text-muted-foreground mb-1.5">Status</p>
-            <div className="flex items-center gap-3">
-              <Badge variant={freePercentage === 0 ? "destructive" : freePercentage <= 35 ? "secondary" : "default"} className="px-2.5 py-0.5">
-                {freePercentage === 0 ? "Full" : freePercentage <= 35 ? "Limited" : "Available"}
-              </Badge>
-              <span className="text-lg">{`${freeSpots} of ${totalSpots} spots available`}</span>
-            </div>
-          </div>
-        </div>
+        <StationInfoCard 
+          stationInfo={stationInfo} 
+          freeSpots={freeSpots} 
+          totalSpots={totalSpots} 
+        />
 
         <div className="md:col-span-2">
           <div className="flex items-center justify-between mb-4">
@@ -128,32 +201,12 @@ export default function StationPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {spots.map((spot) => (
-              <Card key={spot.id} className="hover:shadow-md transition-shadow">
-                <CardContent className="pt-6">
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Badge variant={spot.state === 'FREE' ? "default" : "destructive"} className="px-2.5 py-0.5">
-                          {spot.state}
-                        </Badge>
-                        {user?.role === 'OPERATOR' && (
-                          <Link href={`/dashboard/stations/${params.id}/spots/${spot.id}/edit`}>
-                            <Button variant="outline" size="sm">
-                              Edit
-                            </Button>
-                          </Link>
-                        )}
-                      </div>
-                      <Badge variant="outline" className="px-2.5 py-0.5">
-                        {spot.connectorType}
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Spot ID: {spot.id}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+              <SpotCard 
+                key={spot.id} 
+                spot={spot} 
+                stationId={params.id as string} 
+                isOperator={isOperator} 
+              />
             ))}
           </div>
         </div>
