@@ -12,17 +12,36 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { toast } from 'sonner'
+import { useUser } from '@/lib/contexts/user-context'
 
 export default function NewSpotPage() {
   const params = useParams()
   const router = useRouter()
+  const { user } = useUser()
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if (!user || user.role !== 'OPERATOR') {
+      toast.error('Only operators can create charging spots')
+      return
+    }
+
     setLoading(true)
 
     const formData = new FormData(e.currentTarget)
+    const powerKw = Number(formData.get('powerKw'))
+    const pricePerKwh = Number(formData.get('pricePerKwh'))
+    const connectorType = formData.get('connectorType') as ConnectorType
+    const chargingVelocity = formData.get('chargingVelocity') as ChargingVelocity
+
+    // Validate required fields
+    if (!powerKw || !pricePerKwh || !connectorType || !chargingVelocity) {
+      toast.error('Please fill in all required fields with valid values')
+      setLoading(false)
+      return
+    }
+
     const spotData: ChargingSpot = {
       station: { 
         id: Number(params.id),
@@ -30,10 +49,10 @@ export default function NewSpotPage() {
         lat: 0,   // Required by type but not used in creation
         lon: 0    // Required by type but not used in creation
       },
-      powerKw: Number(formData.get('powerKw')),
-      pricePerKwh: Number(formData.get('pricePerKwh')),
-      chargingVelocity: formData.get('chargingVelocity') as ChargingVelocity,
-      connectorType: formData.get('connectorType') as ConnectorType,
+      powerKw,
+      pricePerKwh,
+      chargingVelocity,
+      connectorType,
       state: ChargingSpotState.FREE
     }
 
@@ -43,10 +62,22 @@ export default function NewSpotPage() {
       router.push(`/dashboard/stations/${params.id}`)
     } catch (error) {
       console.error('Error creating spot:', error)
-      toast.error("Failed to create charging spot")
+      toast.error("Failed to create charging spot. Make sure you are the operator of this station.")
     } finally {
       setLoading(false)
     }
+  }
+
+  if (!user || user.role !== 'OPERATOR') {
+    return (
+      <div className="container mx-auto py-8 px-4">
+        <Card>
+          <CardContent className="pt-6">
+            <p className="text-center text-gray-500">You don't have permission to create charging spots.</p>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (
@@ -67,31 +98,33 @@ export default function NewSpotPage() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="powerKw">Power (kW)</Label>
+              <Label htmlFor="powerKw">Power (kW) *</Label>
               <Input
                 id="powerKw"
                 name="powerKw"
                 type="number"
                 step="0.1"
                 required
+                min="0"
                 placeholder="Enter power in kW"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="pricePerKwh">Price per kWh</Label>
+              <Label htmlFor="pricePerKwh">Price per kWh *</Label>
               <Input
                 id="pricePerKwh"
                 name="pricePerKwh"
                 type="number"
                 step="0.01"
                 required
+                min="0"
                 placeholder="Enter price per kWh"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="chargingVelocity">Charging Velocity</Label>
+              <Label htmlFor="chargingVelocity">Charging Velocity *</Label>
               <Select name="chargingVelocity" required>
                 <SelectTrigger>
                   <SelectValue placeholder="Select charging velocity" />
@@ -105,7 +138,7 @@ export default function NewSpotPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="connectorType">Connector Type</Label>
+              <Label htmlFor="connectorType">Connector Type *</Label>
               <Select name="connectorType" required>
                 <SelectTrigger>
                   <SelectValue placeholder="Select connector type" />

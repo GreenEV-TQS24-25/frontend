@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { toast } from 'sonner'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
+import { ChargingStation, User } from '@/lib/types'
 
 export default function NewStationPage() {
   const router = useRouter()
@@ -19,14 +20,45 @@ export default function NewStationPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!user) return
+    if (!user || user.role !== 'OPERATOR') {
+      toast.error('Only operators can create stations')
+      return
+    }
 
     const formData = new FormData(e.currentTarget)
-    const stationData = {
-      name: formData.get('name') as string,
-      lat: parseFloat(formData.get('lat') as string),
-      lon: parseFloat(formData.get('lon') as string),
-      photoUrl: formData.get('photoUrl') as string || undefined,
+    const name = formData.get('name') as string
+    const lat = formData.get('lat') as string
+    const lon = formData.get('lon') as string
+    const photoUrl = formData.get('photoUrl') as string
+
+    // Validate required fields
+    if (!name || !lat || !lon) {
+      toast.error('Please fill in all required fields')
+      return
+    }
+
+    // Validate coordinates
+    const latNum = parseFloat(lat)
+    const lonNum = parseFloat(lon)
+    if (isNaN(latNum) || isNaN(lonNum)) {
+      toast.error('Invalid coordinates')
+      return
+    }
+
+    const operator: User = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      password: '' // Required by type but not used in this context
+    }
+
+    const stationData: ChargingStation = {
+      name,
+      lat: latNum,
+      lon: lonNum,
+      photoUrl: photoUrl || undefined,
+      operator
     }
 
     try {
@@ -36,7 +68,11 @@ export default function NewStationPage() {
       router.push('/dashboard')
     } catch (error) {
       console.error('Error creating station:', error)
-      toast.error('Failed to create station')
+      if (error instanceof Error) {
+        toast.error(error.message || 'Failed to create station')
+      } else {
+        toast.error('Failed to create station')
+      }
     } finally {
       setLoading(false)
     }
@@ -72,7 +108,7 @@ export default function NewStationPage() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="name">Station Name</Label>
+              <Label htmlFor="name">Station Name *</Label>
               <Input
                 id="name"
                 name="name"
@@ -83,7 +119,7 @@ export default function NewStationPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="lat">Latitude</Label>
+                <Label htmlFor="lat">Latitude *</Label>
                 <Input
                   id="lat"
                   name="lat"
@@ -95,7 +131,7 @@ export default function NewStationPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="lon">Longitude</Label>
+                <Label htmlFor="lon">Longitude *</Label>
                 <Input
                   id="lon"
                   name="lon"
