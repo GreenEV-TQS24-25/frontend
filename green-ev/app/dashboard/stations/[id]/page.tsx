@@ -2,16 +2,18 @@
 
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
-import { ChargingSpot, StationsSpots } from '@/lib/types'
+import { ChargingSpot, StationsSpots, UserRole } from '@/lib/types'
 import { chargingSpotApi } from '@/lib/api'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Plus } from 'lucide-react'
 import Link from 'next/link'
+import { useUser } from '@/lib/contexts/user-context'
 
 export default function StationPage() {
   const params = useParams()
+  const { user } = useUser()
   const [spots, setSpots] = useState<ChargingSpot[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -73,6 +75,8 @@ export default function StationPage() {
     )
   }
 
+  const isOperator = user?.role === UserRole.OPERATOR
+
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="flex items-center mb-8">
@@ -102,7 +106,17 @@ export default function StationPage() {
         </div>
 
         <div className="md:col-span-2">
-          <h2 className="text-xl font-semibold mb-4">Charging Spots</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold">Charging Spots</h2>
+            {isOperator && (
+              <Link href={`/dashboard/stations/${params.id}/spots/new`}>
+                <Button size="sm" className="gap-2">
+                  <Plus className="h-4 w-4" />
+                  Add Spot
+                </Button>
+              </Link>
+            )}
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {spots.map((spot) => (
               <Card key={spot.id} className="hover:shadow-md transition-shadow">
