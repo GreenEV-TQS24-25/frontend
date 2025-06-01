@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -11,7 +11,6 @@ import { toast } from 'sonner'
 
 export default function LoginPage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const { login, loading } = useUser()
   const [formData, setFormData] = useState({
     email: '',
@@ -22,8 +21,7 @@ export default function LoginPage() {
     e.preventDefault()
     try {
       await login(formData.email, formData.password)
-      const from = searchParams.get('from') ?? '/dashboard'
-      router.push(from)
+      router.push('/dashboard')
     } catch (error: unknown) {
       console.error('Login error:', error)
       toast.error('Invalid email or password')
