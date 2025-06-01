@@ -39,7 +39,7 @@ async function fetchApi<T>(
       statusText: response.statusText,
       errorData
     })
-    throw new Error(errorData?.detail || response.statusText)
+    throw new Error(errorData?.detail ?? response.statusText)
   }
 
   const data = await response.json()

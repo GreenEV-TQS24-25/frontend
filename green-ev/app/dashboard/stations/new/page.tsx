@@ -20,7 +20,7 @@ export default function NewStationPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!user || user.role !== 'OPERATOR') {
+    if (!user ?? user.role !== 'OPERATOR') {
       toast.error('Only operators can create stations')
       return
     }
@@ -32,7 +32,7 @@ export default function NewStationPage() {
     const photoUrl = formData.get('photoUrl') as string
 
     // Validate required fields
-    if (!name || !lat || !lon) {
+    if (!name ?? !lat ?? !lon) {
       toast.error('Please fill in all required fields')
       return
     }
@@ -40,7 +40,7 @@ export default function NewStationPage() {
     // Validate coordinates
     const latNum = parseFloat(lat)
     const lonNum = parseFloat(lon)
-    if (isNaN(latNum) || isNaN(lonNum)) {
+    if (isNaN(latNum) ?? isNaN(lonNum)) {
       toast.error('Invalid coordinates')
       return
     }
@@ -57,7 +57,7 @@ export default function NewStationPage() {
       name,
       lat: latNum,
       lon: lonNum,
-      photoUrl: photoUrl || undefined,
+      photoUrl: photoUrl ?? undefined,
       operator
     }
 
@@ -69,7 +69,7 @@ export default function NewStationPage() {
     } catch (error) {
       console.error('Error creating station:', error)
       if (error instanceof Error) {
-        toast.error(error.message || 'Failed to create station')
+        toast.error(error.message ?? 'Failed to create station')
       } else {
         toast.error('Failed to create station')
       }
@@ -78,7 +78,7 @@ export default function NewStationPage() {
     }
   }
 
-  if (!user || user.role !== 'OPERATOR') {
+  if (!user ?? user.role !== 'OPERATOR') {
     return (
       <div className="container mx-auto py-8 px-4">
         <Card>

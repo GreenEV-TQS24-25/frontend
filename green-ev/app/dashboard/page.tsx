@@ -21,7 +21,7 @@ export default function DashboardPage() {
         const stationsData = user?.role === 'OPERATOR' 
           ? await chargingStationApi.getByOperator()
           : await chargingStationApi.getAll()
-        setStations(stationsData || [])
+        setStations(stationsData ?? [])
       } catch (error) {
         console.error('Error fetching stations:', error)
         setStations([])
@@ -32,7 +32,7 @@ export default function DashboardPage() {
   }, [user?.role])
 
   const getAvailabilityColor = (station: StationsSpots) => {
-    if (!station.spots || !Array.isArray(station.spots)) {
+    if (!station.spots ?? !Array.isArray(station.spots)) {
       return 'bg-gray-100 text-gray-800'
     }
     
@@ -70,7 +70,7 @@ export default function DashboardPage() {
                 <div className="relative h-48 w-full bg-gray-100 flex items-center justify-center">
                   <Image
                     src="/charging-station.jpg"
-                    alt={station.chargingStation.name || "Charging Station"}
+                    alt={station.chargingStation.name ?? "Charging Station"}
                     fill
                     className="object-cover"
                     onError={(e) => {
@@ -83,7 +83,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <CardHeader>
-                  <CardTitle>{station.chargingStation.name || "Unnamed Station"}</CardTitle>
+                  <CardTitle>{station.chargingStation.name ?? "Unnamed Station"}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">

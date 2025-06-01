@@ -37,7 +37,7 @@ export default function Map() {
         } else {
           data = await chargingStationApi.getAll()
         }
-        setStations(data || [])
+        setStations(data ?? [])
       } catch (error) {
         console.error('Error fetching stations:', error)
         setStations([])
@@ -52,7 +52,7 @@ export default function Map() {
   }, [user?.role])
 
   const getIconColor = (station: StationsSpots) => {
-    if (!station?.spots || !Array.isArray(station.spots)) {
+    if (!station?.spots ?? !Array.isArray(station.spots)) {
       return new Icon({
         iconUrl: `/zap-red.svg`,
         iconSize: [32, 32],
@@ -78,10 +78,10 @@ export default function Map() {
   const filteredStations = useMemo(() => {
     return stations.filter((station) => {
       // Skip stations without required data
-      if (!station.chargingStation || !station.spots) return false
+      if (!station.chargingStation ?? !station.spots) return false
       
       const matchesConnectors =
-        selectedConnectors.length === 0 ||
+        selectedConnectors.length === 0 ??
         station.spots.some(
           (spot) =>
             spot.connectorType &&
@@ -96,7 +96,7 @@ export default function Map() {
     router.push(`/dashboard/stations/${stationId.toString()}`)
   }
 
-  if (!mounted || loading) {
+  if (!mounted ?? loading) {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>

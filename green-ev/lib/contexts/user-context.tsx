@@ -42,7 +42,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       const response = await userApi.login({ email, password })
       console.log('Login response:', response)
       
-      if (!response || !response.token) {
+      if (!response ?? !response.token) {
         throw new Error('Invalid login response')
       }
 
