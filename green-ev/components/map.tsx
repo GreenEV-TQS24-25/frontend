@@ -9,6 +9,8 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { useUser } from '@/lib/contexts/user-context'
+import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
 
 // Dynamically import Leaflet components to avoid SSR issues
 const MapContainer = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false })
@@ -25,6 +27,7 @@ export default function Map() {
   const [mounted, setMounted] = useState(false)
   const [selectedConnectors, setSelectedConnectors] = useState<ConnectorType[]>([])
   const { user } = useUser()
+  const router = useRouter()
 
   useEffect(() => {
     setMounted(true)
@@ -91,6 +94,11 @@ export default function Map() {
     })
   }, [stations, selectedConnectors])
 
+  const handleMarkerClick = (stationId: string | number | undefined) => {
+    if (stationId === undefined) return
+    router.push(`/dashboard/stations/${stationId.toString()}`)
+  }
+
   if (!mounted || loading) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -152,50 +160,11 @@ export default function Map() {
                   station.chargingStation.lat,
                   station.chargingStation.lon,
                 ]}
-                
                 icon={getIconColor(station)}
+                eventHandlers={{
+                  click: () => handleMarkerClick(station.chargingStation.id)
+                }}
               >
-                <Popup>
-                  <Card className="w-[300px]">
-                    <CardHeader>
-                      <CardTitle>{station.chargingStation.name || "Unnamed Station"}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        <div>
-                          <p className="text-sm text-muted-foreground">
-                            {`${station.chargingStation.lat}, ${station.chargingStation.lon}`}
-                          </p>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <Badge variant="secondary">
-                            {station.spots.filter((spot) => spot.state === 'FREE').length}{" "}
-                            spots available
-                          </Badge>
-                          <Badge variant="outline">
-                            {station.spots.length} total spots
-                          </Badge>
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium">Connector Types:</p>
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            {Array.from(
-                              new Set(
-                                station.spots
-                                  .map((spot) => spot.connectorType)
-                                  .filter(Boolean)
-                              )
-                            ).map((type) => (
-                              <Badge key={type} variant="secondary">
-                                {type}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Popup>
               </Marker>
             )
           })}
