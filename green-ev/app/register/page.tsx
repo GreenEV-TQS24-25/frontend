@@ -23,7 +23,7 @@ export default function RegisterPage() {
     setIsLoading(true)
 
     try {
-      const response = await userApi.register(formData)
+      const response = await userApi.create(formData)
       
       // Store the token in a cookie
       document.cookie = `token=${response.token}; path=/`
@@ -98,4 +98,4 @@ export default function RegisterPage() {
       </Card>
     </div>
   )
-} 
+}

@@ -12,7 +12,7 @@ import { toast } from 'sonner'
 export default function LoginPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { login, loading, error } = useUser()
+  const { login, loading } = useUser()
   const [formData, setFormData] = useState({
     email: '',
     password: '',
