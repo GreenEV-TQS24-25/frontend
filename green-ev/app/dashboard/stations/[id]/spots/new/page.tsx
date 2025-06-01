@@ -22,7 +22,7 @@ export default function NewSpotPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!user ?? user.role !== 'OPERATOR') {
+    if (!user || user.role !== 'OPERATOR') {
       toast.error('Only operators can create charging spots')
       return
     }
@@ -36,7 +36,7 @@ export default function NewSpotPage() {
     const chargingVelocity = formData.get('chargingVelocity') as ChargingVelocity
 
     // Validate required fields
-    if (!powerKw ?? !pricePerKwh ?? !connectorType ?? !chargingVelocity) {
+    if (!powerKw || !pricePerKwh || !connectorType || !chargingVelocity) {
       toast.error('Please fill in all required fields with valid values')
       setLoading(false)
       return
@@ -68,7 +68,7 @@ export default function NewSpotPage() {
     }
   }
 
-  if (!user ?? user.role !== 'OPERATOR') {
+  if (!user || user.role !== 'OPERATOR') {
     return (
       <div className="container mx-auto py-8 px-4">
         <Card>
