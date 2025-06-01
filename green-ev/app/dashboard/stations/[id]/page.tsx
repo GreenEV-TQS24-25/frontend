@@ -7,7 +7,7 @@ import { chargingSpotApi } from '@/lib/api'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, Plus } from 'lucide-react'
+import { ArrowLeft, Plus, Pencil } from 'lucide-react'
 import Link from 'next/link'
 import { useUser } from '@/lib/contexts/user-context'
 
@@ -79,13 +79,22 @@ export default function StationPage() {
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <div className="flex items-center mb-8">
-        <Link href="/dashboard/map">
-          <Button variant="outline" className="mr-4 hover:bg-gray-100">
-            <ArrowLeft className="h-5 w-5"/>
-          </Button>
-        </Link>
-        <h1 className="text-3xl font-bold tracking-tight">{stationInfo.name}</h1>
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center">
+          <Link href="/dashboard/map">
+            <Button variant="outline" className="mr-1 hover:bg-gray-100">
+              <ArrowLeft/>
+            </Button>
+          </Link>
+          {isOperator && (
+          <Link href={`/dashboard/stations/${params.id}/edit`}>
+            <Button variant="outline" className="mr-2">
+              <Pencil/>
+            </Button>
+          </Link>
+        )}
+          <h1 className="text-3xl font-bold tracking-tight">{stationInfo.name}</h1>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -123,9 +132,18 @@ export default function StationPage() {
                 <CardContent className="pt-6">
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <Badge variant={spot.state === 'FREE' ? "default" : "destructive"} className="px-2.5 py-0.5">
-                        {spot.state}
-                      </Badge>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={spot.state === 'FREE' ? "default" : "destructive"} className="px-2.5 py-0.5">
+                          {spot.state}
+                        </Badge>
+                        {user?.role === 'OPERATOR' && (
+                          <Link href={`/dashboard/stations/${params.id}/spots/${spot.id}/edit`}>
+                            <Button variant="outline" size="sm">
+                              Edit
+                            </Button>
+                          </Link>
+                        )}
+                      </div>
                       <Badge variant="outline" className="px-2.5 py-0.5">
                         {spot.connectorType}
                       </Badge>
