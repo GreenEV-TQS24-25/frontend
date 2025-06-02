@@ -36,7 +36,7 @@ export default function ProfilePage(){
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Email</p>
+                  <p className="text-sm text-gray-500">Role</p>
                   <p className="font-medium">
                     {userData.role}
                   </p>
