@@ -15,6 +15,7 @@ export default function EditProfilePage(){
     const router = useRouter()
     const { user, updateUser } = useUser()
     const [userData, setUserData] = useState({
+        id: user?.id || undefined,
         name: user?.name || '',
         email: user?.email || '',
         password: ''
