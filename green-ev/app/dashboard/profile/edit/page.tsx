@@ -13,7 +13,7 @@ import { toast } from "sonner"
 
 export default function EditProfilePage(){
     const router = useRouter()
-    const { user } = useUser()
+    const { user, updateUser } = useUser()
     const [userData, setUserData] = useState({
         name: user?.name || '',
         email: user?.email || '',
@@ -23,7 +23,7 @@ export default function EditProfilePage(){
     const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      await userApi.update(userData)
+      updateUser(userData)
       router.push('/dashboard/profile')
     } catch (error: unknown) {
       console.error('Profile edit error:', error)
