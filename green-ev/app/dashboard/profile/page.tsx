@@ -4,11 +4,9 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useUser } from "@/lib/contexts/user-context"
 import Link from "next/link"
-import { useEffect, useState } from "react"
 
 export default function ProfilePage(){
     const { user } = useUser()
-    const [userData, setUserData] = useState(user)
 
     return (
     <div className="p-6">
@@ -22,23 +20,23 @@ export default function ProfilePage(){
       </div>
       
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        { userData ? ( 
+        { user ? ( 
           <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
             <CardHeader>
-              <CardTitle>{userData.name || "Annonymous user"}</CardTitle>
+              <CardTitle>{user.name || "Annonymous user"}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div>
                   <p className="text-sm text-gray-500">Email</p>
                   <p className="font-medium">
-                    {userData.email}
+                    {user.email}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Role</p>
                   <p className="font-medium">
-                    {userData.role}
+                    {user.role}
                   </p>
                 </div>
               </div>
