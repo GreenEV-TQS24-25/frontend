@@ -1,24 +1,49 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/lib/contexts/user-context'
 import { chargingStationApi } from '@/lib/api'
 import { toast } from 'sonner'
+import { ChargingStation } from '@/lib/types'
 import { PageHeader } from '@/app/components/shared/PageHeader'
 import { FormLayout } from '@/app/components/shared/FormLayout'
 import { FormField } from '@/app/components/shared/FormField'
 import { validateStationForm, createStationData } from '@/lib/utils/station-form'
 
-export default function NewStationPage() {
+export default function EditStationPage({ params }: { params: { id: string } }) {
   const router = useRouter()
   const { user } = useUser()
   const [loading, setLoading] = useState(false)
+  const [station, setStation] = useState<ChargingStation | null>(null)
+
+  useEffect(() => {
+    const fetchStation = async () => {
+      try {
+        const stations = await chargingStationApi.getByOperator()
+        const stationData = stations.find(s => s.chargingStation.id === parseInt(params.id))
+        if (stationData) {
+          setStation(stationData.chargingStation)
+        } else {
+          toast.error('Station not found')
+          router.push('/dashboard')
+        }
+      } catch (error) {
+        console.error('Error fetching station:', error)
+        toast.error('Failed to fetch station details')
+        router.push('/dashboard')
+      }
+    }
+
+    if (user?.role === 'OPERATOR') {
+      fetchStation()
+    }
+  }, [params.id, user?.role, router])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!user || user.role !== 'OPERATOR') {
-      toast.error('Only operators can create stations')
+    if (!user || user.role !== 'OPERATOR' || !station) {
+      toast.error('Only operators can edit stations')
       return
     }
 
@@ -26,19 +51,19 @@ export default function NewStationPage() {
     const validatedData = validateStationForm(formData)
     if (!validatedData) return
 
-    const stationData = createStationData(validatedData, user)
+    const stationData = createStationData(validatedData, user, station)
 
     try {
       setLoading(true)
-      await chargingStationApi.create(stationData)
-      toast.success('Station created successfully')
+      await chargingStationApi.update(stationData)
+      toast.success('Station updated successfully')
       router.push('/dashboard')
     } catch (error) {
-      console.error('Error creating station:', error)
+      console.error('Error updating station:', error)
       if (error instanceof Error) {
-        toast.error(error.message || 'Failed to create station')
+        toast.error(error.message || 'Failed to update station')
       } else {
-        toast.error('Failed to create station')
+        toast.error('Failed to update station')
       }
     } finally {
       setLoading(false)
@@ -48,7 +73,15 @@ export default function NewStationPage() {
   if (!user || user.role !== 'OPERATOR') {
     return (
       <div className="container mx-auto py-8 px-4">
-        <div className="text-center text-gray-500">You don't have permission to create stations.</div>
+        <div className="text-center text-gray-500">You don't have permission to edit stations.</div>
+      </div>
+    )
+  }
+
+  if (!station) {
+    return (
+      <div className="container mx-auto py-8 px-4">
+        <div className="text-center text-gray-500">Loading station details...</div>
       </div>
     )
   }
@@ -56,7 +89,7 @@ export default function NewStationPage() {
   return (
     <>
       <PageHeader 
-        title="New Charging Station" 
+        title="Edit Charging Station" 
         backUrl="/dashboard"
       />
       <FormLayout 
@@ -64,7 +97,6 @@ export default function NewStationPage() {
         onSubmit={handleSubmit}
         loading={loading}
         cancelUrl="/dashboard"
-        submitText="Create Station"
       >
         <div className="grid grid-cols-2 gap-4">
           <FormField
@@ -72,12 +104,14 @@ export default function NewStationPage() {
             name="name"
             required
             placeholder="Enter station name"
+            defaultValue={station.name}
           />
 
           <FormField
             label="Photo URL"
             name="photoUrl"
             placeholder="Enter photo URL (optional)"
+            defaultValue={station.photoUrl}
           />
         </div>
 
@@ -89,6 +123,7 @@ export default function NewStationPage() {
             required
             step="0.000001"
             placeholder="Enter latitude"
+            defaultValue={station.lat}
           />
 
           <FormField
@@ -98,6 +133,7 @@ export default function NewStationPage() {
             required
             step="0.000001"
             placeholder="Enter longitude"
+            defaultValue={station.lon}
           />
         </div>
       </FormLayout>
