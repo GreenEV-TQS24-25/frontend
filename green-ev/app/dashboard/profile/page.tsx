@@ -1,12 +1,12 @@
 'use client'
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { useUser } from "@/lib/contexts/user-context"
 import Link from "next/link"
 
 export default function ProfilePage(){
-    const { user } = useUser()
+    const { user, logout } = useUser()
 
     return (
     <div className="p-6">
@@ -41,6 +41,16 @@ export default function ProfilePage(){
                 </div>
               </div>
             </CardContent>
+            <CardFooter>
+              <div className="flex justify-between items-center mb-6">
+                <Button 
+                  className="flex items-center gap-2"
+                  onClick={() => logout()}
+                >
+                  Logout
+                </Button>
+              </div>
+            </CardFooter>
           </Card>
         ) : null}
       </div>
