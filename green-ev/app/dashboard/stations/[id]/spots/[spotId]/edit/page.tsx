@@ -4,15 +4,11 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/lib/contexts/user-context'
 import { chargingSpotApi } from '@/lib/api'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent } from '@/components/ui/card'
 import { toast } from 'sonner'
-import { ArrowLeft } from 'lucide-react'
-import Link from 'next/link'
 import { ChargingSpot, ChargingVelocity, ConnectorType, ChargingSpotState } from '@/lib/types'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { PageHeader } from '@/app/components/shared/PageHeader'
+import { FormLayout } from '@/app/components/shared/FormLayout'
+import { FormField } from '@/app/components/shared/FormField'
 
 export default function EditSpotPage({ params }: { params: { id: string; spotId: string } }) {
   const router = useRouter()
@@ -101,11 +97,7 @@ export default function EditSpotPage({ params }: { params: { id: string; spotId:
   if (!user || user.role !== 'OPERATOR') {
     return (
       <div className="container mx-auto py-8 px-4">
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-center text-gray-500">You don't have permission to edit spots.</p>
-          </CardContent>
-        </Card>
+        <div className="text-center text-gray-500">You don't have permission to edit spots.</div>
       </div>
     )
   }
@@ -113,119 +105,87 @@ export default function EditSpotPage({ params }: { params: { id: string; spotId:
   if (!spot) {
     return (
       <div className="container mx-auto py-8 px-4">
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-center text-gray-500">Loading spot details...</p>
-          </CardContent>
-        </Card>
+        <div className="text-center text-gray-500">Loading spot details...</div>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="flex items-center mb-8">
-        <div className="flex items-center">
-          <Link href={`/dashboard/stations/${params.id}`}>
-            <Button variant="outline" className="mr-1 hover:bg-gray-100">
-              <ArrowLeft/>
-            </Button>
-          </Link>
-          <h1 className="text-3xl font-bold tracking-tight">Edit Charging Spot</h1>
+    <>
+      <PageHeader 
+        title="Edit Charging Spot" 
+        backUrl={`/dashboard/stations/${params.id}`}
+      />
+      <FormLayout 
+        title="Spot Details"
+        onSubmit={handleSubmit}
+        loading={loading}
+        cancelUrl={`/dashboard/stations/${params.id}`}
+      >
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            label="Power (kW)"
+            name="powerKw"
+            type="number"
+            required
+            step="0.1"
+            placeholder="Enter power in kW"
+            defaultValue={spot.powerKw}
+          />
+
+          <FormField
+            label="Price per kWh"
+            name="pricePerKwh"
+            type="number"
+            required
+            step="0.01"
+            placeholder="Enter price per kWh"
+            defaultValue={spot.pricePerKwh}
+          />
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <Card className="md:col-span-2">
-          <CardContent className="pt-6">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="powerKw">Power (kW) *</Label>
-                  <Input
-                    id="powerKw"
-                    name="powerKw"
-                    type="number"
-                    step="0.1"
-                    required
-                    placeholder="Enter power in kW"
-                    defaultValue={spot.powerKw}
-                  />
-                </div>
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            label="Charging Velocity"
+            name="chargingVelocity"
+            type="select"
+            required
+            defaultValue={spot.chargingVelocity}
+            options={[
+              { value: ChargingVelocity.NORMAL, label: 'Normal' },
+              { value: ChargingVelocity.FAST, label: 'Fast' },
+              { value: ChargingVelocity.FASTPP, label: 'Fast++' }
+            ]}
+          />
 
-                <div className="space-y-2">
-                  <Label htmlFor="pricePerKwh">Price per kWh *</Label>
-                  <Input
-                    id="pricePerKwh"
-                    name="pricePerKwh"
-                    type="number"
-                    step="0.01"
-                    required
-                    placeholder="Enter price per kWh"
-                    defaultValue={spot.pricePerKwh}
-                  />
-                </div>
-              </div>
+          <FormField
+            label="Connector Type"
+            name="connectorType"
+            type="select"
+            required
+            defaultValue={spot.connectorType}
+            options={[
+              { value: ConnectorType.SAEJ1772, label: 'SAE J1772' },
+              { value: ConnectorType.MENNEKES, label: 'Mennekes' },
+              { value: ConnectorType.CHADEMO, label: 'CHAdeMO' },
+              { value: ConnectorType.CCS, label: 'CCS' }
+            ]}
+          />
+        </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="chargingVelocity">Charging Velocity *</Label>
-                  <Select name="chargingVelocity" defaultValue={spot.chargingVelocity} required>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select charging velocity" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value={ChargingVelocity.NORMAL}>Normal</SelectItem>
-                      <SelectItem value={ChargingVelocity.FAST}>Fast</SelectItem>
-                      <SelectItem value={ChargingVelocity.FASTPP}>Fast++</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="connectorType">Connector Type *</Label>
-                  <Select name="connectorType" defaultValue={spot.connectorType} required>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select connector type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value={ConnectorType.SAEJ1772}>SAE J1772</SelectItem>
-                      <SelectItem value={ConnectorType.MENNEKES}>Mennekes</SelectItem>
-                      <SelectItem value={ConnectorType.CHADEMO}>CHAdeMO</SelectItem>
-                      <SelectItem value={ConnectorType.CCS}>CCS</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="state">Status *</Label>
-                <Select name="state" defaultValue={spot.state} required>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value={ChargingSpotState.FREE}>Free</SelectItem>
-                    <SelectItem value={ChargingSpotState.OCCUPIED}>Occupied</SelectItem>
-                    <SelectItem value={ChargingSpotState.OUT_OF_SERVICE}>Out of Service</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="flex justify-end gap-4">
-                <Link href={`/dashboard/stations/${params.id}`}>
-                  <Button type="button" variant="outline">
-                    Cancel
-                  </Button>
-                </Link>
-                <Button type="submit" disabled={loading}>
-                  {loading ? 'Saving...' : 'Save Changes'}
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+        <FormField
+          label="Status"
+          name="state"
+          type="select"
+          required
+          defaultValue={spot.state}
+          options={[
+            { value: ChargingSpotState.FREE, label: 'Free' },
+            { value: ChargingSpotState.OCCUPIED, label: 'Occupied' },
+            { value: ChargingSpotState.OUT_OF_SERVICE, label: 'Out of Service' }
+          ]}
+        />
+      </FormLayout>
+    </>
   )
 } 
