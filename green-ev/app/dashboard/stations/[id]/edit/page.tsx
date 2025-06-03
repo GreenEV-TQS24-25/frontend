@@ -11,7 +11,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { toast } from 'sonner'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
-import { ChargingStation, User, StationsSpots } from '@/lib/types'
+import { ChargingStation, User } from '@/lib/types'
 
 export default function EditStationPage({ params }: { params: { id: string } }) {
   const router = useRouter()
