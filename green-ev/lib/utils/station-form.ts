@@ -1,5 +1,5 @@
 import { toast } from 'sonner'
-import { User, ChargingStation } from '@/lib/types'
+import { User, ChargingStation, LoginResponse } from '@/lib/types'
 
 interface StationFormData {
   name: string
@@ -33,7 +33,7 @@ export function validateStationForm(formData: FormData): StationFormData | null 
 
 export function createStationData(
   formData: StationFormData, 
-  user: User, 
+  user: User | LoginResponse, 
   existingStation?: ChargingStation
 ): ChargingStation {
   const operator: User = {
