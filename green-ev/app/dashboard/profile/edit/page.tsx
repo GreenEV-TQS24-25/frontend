@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { userApi } from "@/lib/api"
 import { useUser } from "@/lib/contexts/user-context"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -13,7 +12,7 @@ import { toast } from "sonner"
 
 export default function EditProfilePage(){
     const router = useRouter()
-    const { user, updateUser } = useUser()
+    const { user, updateUser, updateUserThenLogout } = useUser()
     const [userData, setUserData] = useState({
         id: user?.id || undefined,
         name: user?.name || '',
@@ -24,8 +23,12 @@ export default function EditProfilePage(){
     const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      updateUser(userData)
-      router.push('/dashboard/profile')
+      if (user?.email !== userData.email) {
+        updateUserThenLogout(userData)
+      } else {
+        updateUser(userData)
+        router.push('/dashboard/profile')
+      }
     } catch (error: unknown) {
       console.error('Profile edit error:', error)
       toast.error('Update failed')
