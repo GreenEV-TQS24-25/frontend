@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Label } from '@/components/ui/label'
 import { useUser } from '@/lib/contexts/user-context'
 import { toast } from 'sonner'
+import Link from 'next/link'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -58,6 +59,14 @@ export default function LoginPage() {
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 required
               />
+            </div>
+            <div className="text-sm text-right">
+              <Link 
+                href="/forgot-password"
+                className="text-primary hover:underline"
+              >
+                Forgot password?
+              </Link>
             </div>
           </CardContent>
           <CardFooter className="flex flex-col pt-4 space-y-4">

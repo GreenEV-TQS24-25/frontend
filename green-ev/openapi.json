@@ -1,0 +1,1150 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "GreenEV API",
+        "description": "Every API endpoint used in the app.",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost",
+            "description": "Generated server url"
+        }
+    ],
+    "security": [
+        {
+            "Bearer Authentication": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "Vehicle",
+            "description": "The Vehicle API"
+        },
+        {
+            "name": "Charging Spots",
+            "description": "The Charging Spots API"
+        },
+        {
+            "name": "Charging Stations",
+            "description": "The Charging Stations API"
+        },
+        {
+            "name": "Session",
+            "description": "The Session API"
+        },
+        {
+            "name": "User Table",
+            "description": "The User Table API"
+        }
+    ],
+    "paths": {
+        "/api/v1/private/vehicles": {
+            "get": {
+                "tags": [
+                    "Vehicle"
+                ],
+                "summary": "Get all Vehicles by User ID",
+                "description": "Fetches a list of all vehicles by user id.",
+                "operationId": "getAllVehiclesByUserId",
+                "responses": {
+                    "200": {
+                        "description": "List of vehicles retrieved successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Vehicle"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No vehicles found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Vehicle"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Vehicle"
+                ],
+                "summary": "Update a Vehicle",
+                "description": "Updates a vehicle.",
+                "operationId": "updateVehicle",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Vehicle"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Vehicle updated successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Vehicle"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No vehicle found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Vehicle"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Vehicle"
+                ],
+                "summary": "Create a new Vehicle",
+                "description": "Creates a new vehicle.",
+                "operationId": "createVehicle",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Vehicle"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Vehicle created successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Vehicle"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No vehicle found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Vehicle"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/private/user-table": {
+            "put": {
+                "tags": [
+                    "User Table"
+                ],
+                "summary": "Update User",
+                "description": "Updates a user.",
+                "operationId": "updateUser",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "User updated successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "User Table"
+                ],
+                "summary": "Delete User",
+                "description": "Deletes a user.",
+                "operationId": "deleteUser",
+                "responses": {
+                    "200": {
+                        "description": "User deleted successfully"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/private/charging-stations": {
+            "get": {
+                "tags": [
+                    "Charging Stations"
+                ],
+                "summary": "Get all Charging Stations by Operator ID",
+                "description": "Fetches a list of all chargingStation by operator id.",
+                "operationId": "getAllChargingStationsByOperatorId",
+                "responses": {
+                    "200": {
+                        "description": "List of chargingStation retrieved successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/StationsSpots"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No chargingStation found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/StationsSpots"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Charging Stations"
+                ],
+                "summary": "Update a Charging Station",
+                "description": "Updates a chargingStation.",
+                "operationId": "updateChargingStation",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChargingStation"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "ChargingStation updated successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChargingStation"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid chargingStation data",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChargingStation"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Charging Stations"
+                ],
+                "summary": "Create a new Charging Station",
+                "description": "Creates a new chargingStation.",
+                "operationId": "createChargingStation",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChargingStation"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "400": {
+                        "description": "Invalid chargingStation data",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChargingStation"
+                                }
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "ChargingStation created successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChargingStation"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/private/charging-spots": {
+            "put": {
+                "tags": [
+                    "Charging Spots"
+                ],
+                "summary": "Update a Charging Spot",
+                "description": "Updates a chargingSpot.",
+                "operationId": "updateChargingSpot",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChargingSpot"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "ChargingSpot updated successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChargingSpot"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No chargingSpot found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChargingSpot"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Charging Spots"
+                ],
+                "summary": "Create a new Charging Spot",
+                "description": "Creates a new chargingSpot.",
+                "operationId": "createChargingSpot",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChargingSpot"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "404": {
+                        "description": "No chargingSpot found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChargingSpot"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "ChargingSpot created successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChargingSpot"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/public/user-table": {
+            "post": {
+                "tags": [
+                    "User Table"
+                ],
+                "summary": "Create User",
+                "description": "Creates a new user.",
+                "operationId": "createUser",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "User created successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LoginResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid user data",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LoginResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/public/user-table/login": {
+            "post": {
+                "tags": [
+                    "User Table"
+                ],
+                "summary": "Login User",
+                "description": "Logs in a user.",
+                "operationId": "loginUser",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "User logged in successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LoginResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LoginResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/private/session": {
+            "get": {
+                "tags": [
+                    "Session"
+                ],
+                "summary": "Get all Sessions by User ID",
+                "description": "Fetches a list of all sessions by user id.",
+                "operationId": "getAllSessionsByUserId",
+                "responses": {
+                    "200": {
+                        "description": "List of sessions retrieved successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Session"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No sessions found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Session"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Session"
+                ],
+                "summary": "Create a new Session",
+                "description": "Creates a new session.",
+                "operationId": "createSession",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Session"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "404": {
+                        "description": "No session found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Session"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Session created successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Session"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/public/charging-stations/filter": {
+            "get": {
+                "tags": [
+                    "Charging Stations"
+                ],
+                "summary": "Filter Charging Stations by Connector Type",
+                "description": "Fetches a list of chargingStation with all specified connectorType.",
+                "operationId": "filterChargingStations",
+                "parameters": [
+                    {
+                        "name": "connectorTypeInputs",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid connectorType",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ChargingStation"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "List of chargingStation retrieved successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ChargingStation"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No chargingStation found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ChargingStation"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/public/charging-stations/all": {
+            "get": {
+                "tags": [
+                    "Charging Stations"
+                ],
+                "summary": "Get all Charging Stations",
+                "description": "Fetches a list of all chargingStation.",
+                "operationId": "getAllChargingStations",
+                "responses": {
+                    "200": {
+                        "description": "List of chargingStation retrieved successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/StationsSpots"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No chargingStation found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/StationsSpots"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/public/charging-spots/{stationId}": {
+            "get": {
+                "tags": [
+                    "Charging Spots"
+                ],
+                "summary": "Get all Charging Spots by Station ID",
+                "description": "Fetches a list of all chargingSpot by station id.",
+                "operationId": "getAllChargingSpotsByStationId",
+                "parameters": [
+                    {
+                        "name": "stationId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of chargingSpot retrieved successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ChargingSpot"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No chargingSpot found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ChargingSpot"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/private/session/station/{stationId}": {
+            "get": {
+                "tags": [
+                    "Session"
+                ],
+                "summary": "Get all Sessions by Station ID",
+                "description": "Fetches a list of all sessions by station id.",
+                "operationId": "getAllSessionsByStationId",
+                "parameters": [
+                    {
+                        "name": "stationId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of sessions retrieved successfully",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Session"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No sessions found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Session"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/private/vehicles/{vehicleId}": {
+            "delete": {
+                "tags": [
+                    "Vehicle"
+                ],
+                "summary": "Delete a Vehicle",
+                "description": "Deletes a vehicle.",
+                "operationId": "deleteVehicle",
+                "parameters": [
+                    {
+                        "name": "vehicleId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Vehicle deleted successfully"
+                    },
+                    "404": {
+                        "description": "No vehicle found"
+                    }
+                }
+            }
+        },
+        "/api/v1/private/session/{sessionId}": {
+            "delete": {
+                "tags": [
+                    "Session"
+                ],
+                "summary": "Delete a Session",
+                "description": "Deletes a session.",
+                "operationId": "deleteSession",
+                "parameters": [
+                    {
+                        "name": "sessionId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "No session found"
+                    },
+                    "200": {
+                        "description": "Session deleted successfully"
+                    }
+                }
+            }
+        },
+        "/api/v1/private/charging-stations/{id}": {
+            "delete": {
+                "tags": [
+                    "Charging Stations"
+                ],
+                "summary": "Delete a Charging Station",
+                "description": "Deletes a chargingStation.",
+                "operationId": "deleteChargingStation",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ChargingStation deleted successfully"
+                    },
+                    "404": {
+                        "description": "ChargingStation not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/private/charging-spots/{id}": {
+            "delete": {
+                "tags": [
+                    "Charging Spots"
+                ],
+                "summary": "Delete a Charging Spot",
+                "description": "Deletes a chargingSpot.",
+                "operationId": "deleteChargingSpot",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ChargingSpot deleted successfully"
+                    },
+                    "404": {
+                        "description": "No chargingSpot found"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Vehicle": {
+                "required": [
+                    "brand",
+                    "connectorType",
+                    "licensePlate",
+                    "model"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "brand": {
+                        "maxLength": 50,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "model": {
+                        "maxLength": 50,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "licensePlate": {
+                        "maxLength": 20,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "connectorType": {
+                        "type": "string",
+                        "enum": [
+                            "SAEJ1772",
+                            "MENNEKES",
+                            "CHADEMO",
+                            "CCS"
+                        ]
+                    }
+                }
+            },
+            "User": {
+                "required": [
+                    "email",
+                    "name",
+                    "password"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "name": {
+                        "maxLength": 255,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "email": {
+                        "maxLength": 255,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "password": {
+                        "maxLength": 255,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "role": {
+                        "type": "string",
+                        "enum": [
+                            "USER",
+                            "OPERATOR"
+                        ]
+                    }
+                }
+            },
+            "ChargingStation": {
+                "required": [
+                    "lat",
+                    "lon",
+                    "name"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "name": {
+                        "maxLength": 100,
+                        "minLength": 0,
+                        "type": "string"
+                    },
+                    "lat": {
+                        "type": "number"
+                    },
+                    "lon": {
+                        "type": "number"
+                    },
+                    "operator": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "photoUrl": {
+                        "maxLength": 255,
+                        "minLength": 0,
+                        "type": "string"
+                    }
+                }
+            },
+            "ChargingSpot": {
+                "required": [
+                    "powerKw",
+                    "pricePerKwh"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "station": {
+                        "$ref": "#/components/schemas/ChargingStation"
+                    },
+                    "powerKw": {
+                        "type": "number"
+                    },
+                    "pricePerKwh": {
+                        "type": "number"
+                    },
+                    "chargingVelocity": {
+                        "type": "string",
+                        "enum": [
+                            "NORMAL",
+                            "FAST",
+                            "FASTPP"
+                        ]
+                    },
+                    "connectorType": {
+                        "type": "string",
+                        "enum": [
+                            "SAEJ1772",
+                            "MENNEKES",
+                            "CHADEMO",
+                            "CCS"
+                        ]
+                    },
+                    "state": {
+                        "type": "string",
+                        "enum": [
+                            "OCCUPIED",
+                            "FREE",
+                            "OUT_OF_SERVICE"
+                        ]
+                    }
+                }
+            },
+            "LoginResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "role": {
+                        "type": "string",
+                        "enum": [
+                            "USER",
+                            "OPERATOR"
+                        ]
+                    },
+                    "token": {
+                        "type": "string"
+                    },
+                    "expires": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                }
+            },
+            "LoginRequest": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Session": {
+                "required": [
+                    "startTime",
+                    "uuid"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "uuid": {
+                        "type": "string"
+                    },
+                    "vehicle": {
+                        "$ref": "#/components/schemas/Vehicle"
+                    },
+                    "chargingSpot": {
+                        "$ref": "#/components/schemas/ChargingSpot"
+                    },
+                    "startTime": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "duration": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "totalCost": {
+                        "type": "number"
+                    }
+                }
+            },
+            "StationsSpots": {
+                "type": "object",
+                "properties": {
+                    "chargingStation": {
+                        "$ref": "#/components/schemas/ChargingStation"
+                    },
+                    "spots": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ChargingSpot"
+                        }
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "Bearer Authentication": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    }
+}
