@@ -68,7 +68,11 @@ export default function DashboardLayout({
               <MapPin className="mr-2 h-4 w-4" />
               Map
             </Button>
-            <Button variant="ghost" className="w-full justify-start">
+            <Button 
+              variant={pathname === '/dashboard/profile' ? 'secondary' : 'ghost'} 
+              className="w-full justify-start"
+              onClick={() => router.push('/dashboard/profile')}
+            >
               <User className="mr-2 h-4 w-4" />
               Profile
             </Button>

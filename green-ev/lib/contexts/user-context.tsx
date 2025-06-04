@@ -11,6 +11,7 @@ interface UserContextType {
   logout: () => void
   updateUser: (user: User) => Promise<void>
   deleteUser: () => Promise<void>
+  updateUserThenLogout: (user: User) => Promise<void>
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined)
@@ -100,6 +101,18 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  const updateUserThenLogout = async (userData: User) => {
+    try {
+      await updateUser(userData)
+      logout()
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to update user')
+      throw e
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <UserContext.Provider
       value={{
@@ -110,6 +123,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         logout,
         updateUser,
         deleteUser,
+        updateUserThenLogout,
       }}
     >
       {children}
