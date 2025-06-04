@@ -189,6 +189,9 @@ const SpotCard = ({
           </Badge>
         </div>
         <p className={styles.textMuted}>Spot ID: {spot.id}</p>
+        <p className={styles.textMuted}>Power: {spot.powerKw} kW</p>
+        <p className={styles.textMuted}>Price: {spot.pricePerKwh} €/kWh</p>
+        <p className={styles.textMuted}>Velocity: {spot.chargingVelocity}</p>
       </div>
     </CardContent>
   </Card>

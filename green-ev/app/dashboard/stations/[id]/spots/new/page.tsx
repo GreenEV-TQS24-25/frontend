@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
 import { ChargingSpot, ChargingVelocity, ConnectorType, ChargingSpotState } from '@/lib/types'
 import { chargingSpotApi } from '@/lib/api'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -12,10 +13,9 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { toast } from 'sonner'
 import { useUser } from '@/lib/contexts/user-context'
-import { useParams, useRouter } from 'next/navigation'
 
 export default function NewSpotPage() {
-  const params = useParams<{ id: string }>()
+  const params = useParams()
   const router = useRouter()
   const { user } = useUser()
   const [loading, setLoading] = useState(false)
@@ -73,7 +73,7 @@ export default function NewSpotPage() {
       <div className="container mx-auto py-8 px-4">
         <Card>
           <CardContent className="pt-6">
-            <p className="text-center text-gray-500">You don&apos;t have permission to create charging spots.</p>
+            <p className="text-center text-gray-500">You don't have permission to create charging spots.</p>
           </CardContent>
         </Card>
       </div>

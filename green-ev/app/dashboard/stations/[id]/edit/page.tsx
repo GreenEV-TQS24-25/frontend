@@ -6,9 +6,9 @@ import { useUser } from '@/lib/contexts/user-context'
 import { chargingStationApi } from '@/lib/api'
 import { toast } from 'sonner'
 import { ChargingStation } from '@/lib/types'
-import { PageHeader } from '@/app/components/shared/PageHeader'
-import { FormLayout } from '@/app/components/shared/FormLayout'
-import { FormField } from '@/app/components/shared/FormField'
+import { PageHeader } from '@/components/shared/PageHeader'
+import { FormLayout } from '@/components/shared/FormLayout'
+import { FormField } from '@/components/shared/FormField'
 import { validateStationForm, createStationData } from '@/lib/utils/station-form'
 
 
