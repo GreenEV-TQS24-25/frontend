@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { useUser } from '@/lib/contexts/user-context'
 import { chargingSpotApi } from '@/lib/api'
 import { toast } from 'sonner'
@@ -10,7 +10,8 @@ import { PageHeader } from '@/app/components/shared/PageHeader'
 import { FormLayout } from '@/app/components/shared/FormLayout'
 import { FormField } from '@/app/components/shared/FormField'
 
-export default function EditSpotPage({ params }: { params: { id: string; spotId: string } }) {
+export default function EditSpotPage() {
+  const params = useParams<{ id: string; spotId: string }>()
   const router = useRouter()
   const { user } = useUser()
   const [loading, setLoading] = useState(false)
@@ -97,7 +98,7 @@ export default function EditSpotPage({ params }: { params: { id: string; spotId:
   if (!user || user.role !== 'OPERATOR') {
     return (
       <div className="container mx-auto py-8 px-4">
-        <div className="text-center text-gray-500">You don't have permission to edit spots.</div>
+        <div className="text-center text-gray-500">You don&apos;t have permission to edit spots.</div>
       </div>
     )
   }

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { useUser } from '@/lib/contexts/user-context'
 import { chargingStationApi } from '@/lib/api'
 import { toast } from 'sonner'
@@ -11,7 +11,9 @@ import { FormLayout } from '@/app/components/shared/FormLayout'
 import { FormField } from '@/app/components/shared/FormField'
 import { validateStationForm, createStationData } from '@/lib/utils/station-form'
 
-export default function EditStationPage({ params }: { params: { id: string } }) {
+
+export default function EditStationPage() {
+  const params = useParams<{ id: string }>()
   const router = useRouter()
   const { user } = useUser()
   const [loading, setLoading] = useState(false)
@@ -73,7 +75,7 @@ export default function EditStationPage({ params }: { params: { id: string } }) 
   if (!user || user.role !== 'OPERATOR') {
     return (
       <div className="container mx-auto py-8 px-4">
-        <div className="text-center text-gray-500">You don't have permission to edit stations.</div>
+        <div className="text-center text-gray-500">You don&apos;t have permission to edit stations.</div>
       </div>
     )
   }
