@@ -23,7 +23,7 @@ export default function ProfilePage(){
         { user ? ( 
           <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
             <CardHeader>
-              <CardTitle>{user.name || "Anonymous user"}</CardTitle>
+              <CardTitle>{user.name ?? "Anonymous user"}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">

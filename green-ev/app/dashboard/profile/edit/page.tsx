@@ -14,9 +14,9 @@ export default function EditProfilePage(){
     const router = useRouter()
     const { user, updateUser, updateUserThenLogout } = useUser()
     const [userData, setUserData] = useState({
-        id: user?.id || undefined,
-        name: user?.name || '',
-        email: user?.email || '',
+        id: user?.id ?? undefined,
+        name: user?.name ?? '',
+        email: user?.email ?? '',
         password: ''
     })
 
@@ -42,7 +42,7 @@ export default function EditProfilePage(){
         { user ? ( 
           <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
             <CardHeader>
-              <CardTitle>{user.name || "Anonymous user"}</CardTitle>
+              <CardTitle>{user.name ?? "Anonymous user"}</CardTitle>
             </CardHeader>
             <form onSubmit={handleSubmit}>
               <CardContent>
@@ -84,15 +84,16 @@ export default function EditProfilePage(){
                 <Button type="submit" className="flex items-center gap-2">
                   Save
                 </Button>
-                <Button 
-                  type="button"
-                  className="flex items-center gap-2" 
-                  variant={"secondary"}
-                  onClick={() => router.push('/dashboard/profile')}
-                >
-                  Cancel
-                </Button>
-                </CardFooter>
+                <Link href="/dashboard/profile">
+                  <Button 
+                    type="button"
+                    className="flex items-center gap-2"
+                    variant={"secondary"}
+                  >
+                    Cancel
+                  </Button>
+                </Link>
+              </CardFooter>
             </form>
           </Card>
         ) : null}
