@@ -38,17 +38,11 @@ export default function EditProfilePage(){
 
     return (
     <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Edit profile</h1>
-        <Link href="/dashboard/profile/edit">
-        </Link>
-      </div>
-      
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         { user ? ( 
           <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
             <CardHeader>
-              <CardTitle>{user.name || "Annonymous user"}</CardTitle>
+              <CardTitle>{user.name || "Anonymous user"}</CardTitle>
             </CardHeader>
             <form onSubmit={handleSubmit}>
               <CardContent>
@@ -85,12 +79,20 @@ export default function EditProfilePage(){
                     required
                   />
                 </div>
-                <CardFooter className="flex flex-col pt-4 space-y-4">
-                  <Button type="submit" className="flex items-center gap-2">
-                    Save
-                  </Button>
-                </CardFooter>
               </CardContent>
+              <CardFooter className="flex flex-col pt-4 space-y-4">
+                <Button type="submit" className="flex items-center gap-2">
+                  Save
+                </Button>
+                <Button 
+                  type="button"
+                  className="flex items-center gap-2" 
+                  variant={"secondary"}
+                  onClick={() => router.push('/dashboard/profile')}
+                >
+                  Cancel
+                </Button>
+                </CardFooter>
             </form>
           </Card>
         ) : null}

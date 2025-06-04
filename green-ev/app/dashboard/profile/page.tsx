@@ -23,7 +23,7 @@ export default function ProfilePage(){
         { user ? ( 
           <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
             <CardHeader>
-              <CardTitle>{user.name || "Annonymous user"}</CardTitle>
+              <CardTitle>{user.name || "Anonymous user"}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -41,15 +41,13 @@ export default function ProfilePage(){
                 </div>
               </div>
             </CardContent>
-            <CardFooter>
-              <div className="flex justify-between items-center mb-6">
-                <Button 
-                  className="flex items-center gap-2"
-                  onClick={() => logout()}
-                >
-                  Logout
-                </Button>
-              </div>
+            <CardFooter className="flex flex-col pt-4 space-y-4">
+              <Button 
+                className="flex items-center gap-2"
+                onClick={() => logout()}
+              >
+                Logout
+              </Button>
             </CardFooter>
           </Card>
         ) : null}
