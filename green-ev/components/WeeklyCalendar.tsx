@@ -2,19 +2,18 @@ import { useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { format, addDays, startOfWeek, isSameDay, isBefore, isAfter, addHours } from 'date-fns'
+import { format, addDays, startOfWeek, isSameDay, isBefore } from 'date-fns'
 import { Session } from '@/lib/types'
 
 interface WeeklyCalendarProps {
   sessions: Session[]
   onSelectTime: (date: Date, duration: number) => void
-  spotId: number
 }
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i)
 const DAYS = Array.from({ length: 7 }, (_, i) => i)
 
-export function WeeklyCalendar({ sessions, onSelectTime, spotId }: WeeklyCalendarProps) {
+export function WeeklyCalendar({ sessions, onSelectTime }: WeeklyCalendarProps) {
   const [currentWeek, setCurrentWeek] = useState(startOfWeek(new Date()))
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<Date | null>(null)
   const [selectionEnd, setSelectionEnd] = useState<Date | null>(null)

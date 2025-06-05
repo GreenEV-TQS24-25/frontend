@@ -143,7 +143,7 @@ export default function SchedulePage({ params }: PageProps) {
             <WeeklyCalendar
               sessions={sessions}
               onSelectTime={handleSelectTime}
-              spotId={spot.id!}
+              
             />
           </div>
 
