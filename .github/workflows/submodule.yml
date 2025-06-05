@@ -32,7 +32,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: "{{defaultContext}}:green-ev"
-          file: green-ev/Dockerfile.prod
+          file: Dockerfile.prod
           push: true
           tags: ghcr.io/greenev-tqs24-25/frontend:latest
           platforms: "linux/amd64,linux/arm64"
