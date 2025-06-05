@@ -7,10 +7,12 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { userApi } from '@/lib/api'
+import { useUser } from '@/lib/contexts/user-context'
 import { toast } from 'sonner'
 
 export default function RegisterPage() {
   const router = useRouter()
+  const { login } = useUser()
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
@@ -28,6 +30,9 @@ export default function RegisterPage() {
       // Store the token in both localStorage and cookie
       localStorage.setItem('token', response.token)
       document.cookie = `token=${response.token}; path=/`
+      
+      // Login with the new credentials to set the user context
+      await login(formData.email, formData.password)
       
       // Redirect to dashboard
       router.push('/dashboard')

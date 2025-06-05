@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { useUser } from '@/lib/contexts/user-context'
 import { sessionApi } from '@/lib/api'
 import { Session } from '@/lib/types'
@@ -13,6 +14,7 @@ import { toast } from 'sonner'
 import { PaymentModal } from '@/components/PaymentModal'
 
 export default function SessionsPage() {
+  const router = useRouter()
   const { user } = useUser()
   const [sessions, setSessions] = useState<Session[]>([])
   const [loading, setLoading] = useState(true)
@@ -40,6 +42,7 @@ export default function SessionsPage() {
   const handleCancelSession = async (sessionId: number) => {
     try {
       await sessionApi.delete(sessionId)
+      router.push('/dashboard')
       toast.success('Session cancelled successfully')
       fetchSessions()
     } catch (error) {

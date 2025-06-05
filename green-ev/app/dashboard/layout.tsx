@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Menu, X, User, LogOut, LayoutDashboard, Settings, MapPin, Car, Clock } from 'lucide-react'
+import { Menu, X, User, LogOut, LayoutDashboard, MapPin, Car, Clock, Calendar } from 'lucide-react'
 import { useRouter, usePathname } from 'next/navigation'
 import { useUser } from '@/lib/contexts/user-context'
 
@@ -90,6 +90,18 @@ export default function DashboardLayout({
                 </Button>
               </>
             )}
+            {user?.role === 'OPERATOR' && (
+              <>
+                <Button 
+                  variant={pathname === '/dashboard/sessions-management' ? 'secondary' : 'ghost'} 
+                  className="w-full justify-start"
+                  onClick={() => router.push('/dashboard/sessions-management')}
+                >
+                  <Calendar className="mr-2 h-4 w-4" />
+                  Sessions Calendar
+                </Button>
+              </>
+            )}
             <Button 
               variant={pathname === '/dashboard/profile' ? 'secondary' : 'ghost'} 
               className="w-full justify-start"
@@ -97,10 +109,6 @@ export default function DashboardLayout({
             >
               <User className="mr-2 h-4 w-4" />
               Profile
-            </Button>
-            <Button variant="ghost" className="w-full justify-start">
-              <Settings className="mr-2 h-4 w-4" />
-              Settings
             </Button>
           </nav>
         </aside>
