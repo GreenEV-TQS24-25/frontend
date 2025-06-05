@@ -9,7 +9,7 @@ import {
   StationsSpots,
 } from './types'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost'
 
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
