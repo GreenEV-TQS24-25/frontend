@@ -36,7 +36,15 @@ export function WeeklyCalendar({ sessions, onSelectTime, spotId }: WeeklyCalenda
     // Check if there's any session that overlaps with this time slot
     return !sessions.some(session => {
       const sessionStart = new Date(session.startTime)
-      const sessionEnd = new Date(sessionStart.getTime() + (session.duration || 0) * 60000)
+      const sessionEnd = new Date(sessionStart.getTime() + (session.duration || 0) * 1000)
+      return date >= sessionStart && date < sessionEnd
+    })
+  }
+
+  const isTimeSlotUserSession = (date: Date) => {
+    return sessions.some(session => {
+      const sessionStart = new Date(session.startTime)
+      const sessionEnd = new Date(sessionStart.getTime() + (session.duration || 0) * 1000)
       return date >= sessionStart && date < sessionEnd
     })
   }
@@ -123,6 +131,7 @@ export function WeeklyCalendar({ sessions, onSelectTime, spotId }: WeeklyCalenda
                   const isFirstSelected = selectedTimeSlot && 
                     isSameDay(timeSlot, selectedTimeSlot) && 
                     timeSlot.getHours() === selectedTimeSlot.getHours()
+                  const isUserSession = isTimeSlotUserSession(timeSlot)
 
                   return (
                     <div
@@ -132,6 +141,8 @@ export function WeeklyCalendar({ sessions, onSelectTime, spotId }: WeeklyCalenda
                           ? 'border-blue-500 bg-blue-100'
                           : isSelected
                           ? 'border-blue-500 bg-blue-50'
+                          : isUserSession
+                          ? 'border-gray-200 bg-yellow-50 hover:bg-yellow-100'
                           : isAvailable
                           ? 'border-gray-200 bg-green-50 hover:bg-green-100 cursor-pointer'
                           : 'border-gray-200 bg-gray-100'
