@@ -9,12 +9,13 @@ interface WeeklyCalendarProps {
   sessions: Session[]
   onSelectTime: (date: Date, duration: number) => void
   spotId: number
+  userVehicleIds?: number[]
 }
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i)
 const DAYS = Array.from({ length: 7 }, (_, i) => i)
 
-export function WeeklyCalendar({ sessions, onSelectTime, spotId }: WeeklyCalendarProps) {
+export function WeeklyCalendar({ sessions, onSelectTime, spotId, userVehicleIds }: WeeklyCalendarProps) {
   const [currentWeek, setCurrentWeek] = useState(startOfWeek(new Date()))
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<Date | null>(null)
   const [selectionEnd, setSelectionEnd] = useState<Date | null>(null)
@@ -45,7 +46,17 @@ export function WeeklyCalendar({ sessions, onSelectTime, spotId }: WeeklyCalenda
     return sessions.some(session => {
       const sessionStart = new Date(session.startTime)
       const sessionEnd = new Date(sessionStart.getTime() + (session.duration || 0) * 1000)
-      return date >= sessionStart && date < sessionEnd
+      const isUserSession = userVehicleIds?.includes(session.vehicle?.id || 0)
+      return date >= sessionStart && date < sessionEnd && isUserSession
+    })
+  }
+
+  const isTimeSlotOtherSession = (date: Date) => {
+    return sessions.some(session => {
+      const sessionStart = new Date(session.startTime)
+      const sessionEnd = new Date(sessionStart.getTime() + (session.duration || 0) * 1000)
+      const isUserSession = userVehicleIds?.includes(session.vehicle?.id || 0)
+      return date >= sessionStart && date < sessionEnd && !isUserSession
     })
   }
 
@@ -132,6 +143,7 @@ export function WeeklyCalendar({ sessions, onSelectTime, spotId }: WeeklyCalenda
                     isSameDay(timeSlot, selectedTimeSlot) && 
                     timeSlot.getHours() === selectedTimeSlot.getHours()
                   const isUserSession = isTimeSlotUserSession(timeSlot)
+                  const isOtherSession = isTimeSlotOtherSession(timeSlot)
 
                   return (
                     <div
@@ -142,6 +154,8 @@ export function WeeklyCalendar({ sessions, onSelectTime, spotId }: WeeklyCalenda
                           : isSelected
                           ? 'border-blue-500 bg-blue-50'
                           : isUserSession
+                          ? 'border-gray-200 bg-pink-200 hover:bg-pink-300'
+                          : isOtherSession
                           ? 'border-gray-200 bg-yellow-200 hover:bg-yellow-300'
                           : isAvailable
                           ? 'border-gray-200 bg-green-50 hover:bg-green-100 cursor-pointer'
