@@ -73,7 +73,7 @@ export default function NewSpotPage() {
       <div className="container mx-auto py-8 px-4">
         <Card>
           <CardContent className="pt-6">
-            <p className="text-center text-gray-500">You don't have permission to create charging spots.</p>
+            <p className="text-center text-gray-500">You don&apos;t have permission to create charging spots.</p>
           </CardContent>
         </Card>
       </div>

@@ -48,7 +48,7 @@ export default function NewStationPage() {
   if (!user || user.role !== 'OPERATOR') {
     return (
       <div className="container mx-auto py-8 px-4">
-        <div className="text-center text-gray-500">You don't have permission to create stations.</div>
+        <div className="text-center text-gray-500">You don&apos;t have permission to create stations.</div>
       </div>
     )
   }
