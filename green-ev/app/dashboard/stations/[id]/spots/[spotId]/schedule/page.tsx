@@ -143,7 +143,6 @@ export default function SchedulePage({ params }: PageProps) {
             <WeeklyCalendar
               sessions={sessions}
               onSelectTime={handleSelectTime}
-              spotId={spot.id!}
               userVehicleIds={vehicles.map(v => v.id!).filter(Boolean)}
             />
           </div>

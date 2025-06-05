@@ -5,7 +5,6 @@ import { useUser } from '@/lib/contexts/user-context'
 import { chargingStationApi, sessionApi } from '@/lib/api'
 import { StationsSpots, Session } from '@/lib/types'
 import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Clock, MapPin } from 'lucide-react'
 import { PageHeader } from '@/components/shared/PageHeader'
 import { WeeklyCalendar } from '@/components/WeeklyCalendar'
@@ -65,7 +64,7 @@ export default function SessionsManagementPage() {
     }
   }
 
-  const handleSelectTime = (date: Date, duration: number) => {
+  const handleSelectTime = () => {
     // This is just for viewing sessions, no need to handle time selection
   }
 
@@ -165,7 +164,6 @@ export default function SessionsManagementPage() {
           <WeeklyCalendar
             sessions={sessions}
             onSelectTime={handleSelectTime}
-            spotId={currentSpot.id!}
           />
         )}
       </div>

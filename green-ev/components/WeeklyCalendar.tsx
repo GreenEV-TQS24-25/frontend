@@ -8,14 +8,13 @@ import { Session } from '@/lib/types'
 interface WeeklyCalendarProps {
   sessions: Session[]
   onSelectTime: (date: Date, duration: number) => void
-  spotId: number
   userVehicleIds?: number[]
 }
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i)
 const DAYS = Array.from({ length: 7 }, (_, i) => i)
 
-export function WeeklyCalendar({ sessions, onSelectTime, spotId, userVehicleIds }: WeeklyCalendarProps) {
+export function WeeklyCalendar({ sessions, onSelectTime, userVehicleIds }: WeeklyCalendarProps) {
   const [currentWeek, setCurrentWeek] = useState(startOfWeek(new Date()))
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<Date | null>(null)
   const [selectionEnd, setSelectionEnd] = useState<Date | null>(null)

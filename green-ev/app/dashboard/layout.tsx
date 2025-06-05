@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Menu, X, User, LogOut, LayoutDashboard, Settings, MapPin, Car, Clock, Calendar } from 'lucide-react'
+import { Menu, X, User, LogOut, LayoutDashboard, MapPin, Car, Clock, Calendar } from 'lucide-react'
 import { useRouter, usePathname } from 'next/navigation'
 import { useUser } from '@/lib/contexts/user-context'
 
