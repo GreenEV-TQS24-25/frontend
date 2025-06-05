@@ -2,8 +2,9 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Menu, X, User, LogOut, LayoutDashboard, Settings, MapPin } from 'lucide-react'
+import { Menu, X, User, LogOut, LayoutDashboard, Settings, MapPin, Car } from 'lucide-react'
 import { useRouter, usePathname } from 'next/navigation'
+import { useUser } from '@/lib/contexts/user-context'
 
 export default function DashboardLayout({
   children,
@@ -13,6 +14,7 @@ export default function DashboardLayout({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
+  const { user } = useUser()
 
   const handleLogout = () => {
     document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT'
@@ -68,6 +70,16 @@ export default function DashboardLayout({
               <MapPin className="mr-2 h-4 w-4" />
               Map
             </Button>
+            {user?.role === 'USER' && (
+              <Button 
+                variant={pathname === '/dashboard/vehicles' ? 'secondary' : 'ghost'} 
+                className="w-full justify-start"
+                onClick={() => router.push('/dashboard/vehicles')}
+              >
+                <Car className="mr-2 h-4 w-4" />
+                My Vehicles
+              </Button>
+            )}
             <Button 
               variant={pathname === '/dashboard/profile' ? 'secondary' : 'ghost'} 
               className="w-full justify-start"

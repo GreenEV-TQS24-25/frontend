@@ -176,12 +176,18 @@ const SpotCard = ({
             >
               {spot.state}
             </Badge>
-            {isOperator && (
+            {isOperator ? (
               <IconButton 
                 href={`/dashboard/stations/${stationId}/spots/${spot.id}/edit`} 
                 icon={Pencil} 
                 className="h-8 w-8 p-0" 
               />
+            ) : (
+              <Link href={`/dashboard/stations/${stationId}/spots/${spot.id}/schedule`}>
+                <Button variant="outline" size="sm">
+                  Schedule
+                </Button>
+              </Link>
             )}
           </div>
           <Badge variant="outline" className="px-2.5 py-0.5">
