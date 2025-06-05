@@ -8,12 +8,13 @@ import { Session } from '@/lib/types'
 interface WeeklyCalendarProps {
   sessions: Session[]
   onSelectTime: (date: Date, duration: number) => void
+  spotId: number
 }
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i)
 const DAYS = Array.from({ length: 7 }, (_, i) => i)
 
-export function WeeklyCalendar({ sessions, onSelectTime }: WeeklyCalendarProps) {
+export function WeeklyCalendar({ sessions, onSelectTime, spotId }: WeeklyCalendarProps) {
   const [currentWeek, setCurrentWeek] = useState(startOfWeek(new Date()))
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<Date | null>(null)
   const [selectionEnd, setSelectionEnd] = useState<Date | null>(null)
@@ -141,7 +142,7 @@ export function WeeklyCalendar({ sessions, onSelectTime }: WeeklyCalendarProps) 
                           : isSelected
                           ? 'border-blue-500 bg-blue-50'
                           : isUserSession
-                          ? 'border-gray-200 bg-yellow-50 hover:bg-yellow-100'
+                          ? 'border-gray-200 bg-yellow-200 hover:bg-yellow-300'
                           : isAvailable
                           ? 'border-gray-200 bg-green-50 hover:bg-green-100 cursor-pointer'
                           : 'border-gray-200 bg-gray-100'
