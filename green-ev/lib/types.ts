@@ -23,6 +23,13 @@ export enum ChargingSpotState {
   OUT_OF_SERVICE = 'OUT_OF_SERVICE'
 }
 
+export enum PaymentStatus {
+  PENDING = 'PENDING',
+  PAID = 'PAID',
+  FAILED = 'FAILED',
+  CANCELLED = 'CANCELLED'
+}
+
 // Interfaces
 export interface Vehicle {
   id?: number;
@@ -67,6 +74,7 @@ export interface Session {
   startTime: string; // ISO date-time string
   duration?: number;
   totalCost?: number;
+  paymentStatus?: PaymentStatus;
 }
 
 export interface LoginRequest {

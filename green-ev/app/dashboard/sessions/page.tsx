@@ -6,15 +6,18 @@ import { sessionApi } from '@/lib/api'
 import { Session } from '@/lib/types'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Clock, MapPin, Car } from 'lucide-react'
+import { Clock, MapPin, Car, CreditCard } from 'lucide-react'
 import { PageHeader } from '@/components/shared/PageHeader'
 import { format } from 'date-fns'
 import { toast } from 'sonner'
+import { PaymentModal } from '@/components/PaymentModal'
 
 export default function SessionsPage() {
   const { user } = useUser()
   const [sessions, setSessions] = useState<Session[]>([])
   const [loading, setLoading] = useState(true)
+  const [selectedSessionId, setSelectedSessionId] = useState<number | null>(null)
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
 
   useEffect(() => {
     if (user?.role === 'USER') {
@@ -43,6 +46,20 @@ export default function SessionsPage() {
       console.error('Error cancelling session:', error)
       toast.error('Failed to cancel session')
     }
+  }
+
+  const handlePaymentSuccess = () => {
+    toast.success('Payment completed successfully')
+    fetchSessions()
+  }
+
+  const handlePaymentError = (error: Error) => {
+    toast.error(`Payment failed: ${error.message}`)
+  }
+
+  const openPaymentModal = (sessionId: number) => {
+    setSelectedSessionId(sessionId)
+    setIsPaymentModalOpen(true)
   }
 
   if (!user || user.role !== 'USER') {
@@ -99,9 +116,24 @@ export default function SessionsPage() {
                   {session.totalCost && (
                     <p>Total Cost: {session.totalCost.toFixed(2)} €</p>
                   )}
+                  {session.paymentStatus && (
+                    <p className="font-medium">
+                      Payment Status: {session.paymentStatus}
+                    </p>
+                  )}
                 </div>
 
-                <div className="mt-4 flex justify-end">
+                <div className="mt-4 flex justify-end space-x-2">
+                  {session.paymentStatus !== 'PAID' && session.totalCost && (
+                    <Button 
+                      variant="default" 
+                      size="sm"
+                      onClick={() => session.id && openPaymentModal(session.id)}
+                    >
+                      <CreditCard className="h-4 w-4 mr-2" />
+                      Pay Now
+                    </Button>
+                  )}
                   <Button 
                     variant="destructive" 
                     size="sm"
@@ -121,6 +153,16 @@ export default function SessionsPage() {
           </div>
         )}
       </div>
+
+      {selectedSessionId && (
+        <PaymentModal
+          isOpen={isPaymentModalOpen}
+          onClose={() => setIsPaymentModalOpen(false)}
+          sessionId={selectedSessionId}
+          onSuccess={handlePaymentSuccess}
+          onError={handlePaymentError}
+        />
+      )}
     </>
   )
 } 
