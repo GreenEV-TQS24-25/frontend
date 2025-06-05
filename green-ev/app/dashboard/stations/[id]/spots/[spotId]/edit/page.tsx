@@ -1,16 +1,24 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/lib/contexts/user-context'
 import { chargingSpotApi } from '@/lib/api'
 import { toast } from 'sonner'
 import { ChargingSpot, ChargingVelocity, ConnectorType, ChargingSpotState } from '@/lib/types'
-import { PageHeader } from '@/app/components/shared/PageHeader'
-import { FormLayout } from '@/app/components/shared/FormLayout'
-import { FormField } from '@/app/components/shared/FormField'
+import { PageHeader } from '@/components/shared/PageHeader'
+import { FormLayout } from '@/components/shared/FormLayout'
+import { FormField } from '@/components/shared/FormField'
 
-export default function EditSpotPage({ params }: { params: { id: string; spotId: string } }) {
+interface PageProps {
+  params: Promise<{
+    id: string
+    spotId: string
+  }>
+}
+
+export default function EditSpotPage({ params }: PageProps) {
+  const { id, spotId } = use(params)
   const router = useRouter()
   const { user } = useUser()
   const [loading, setLoading] = useState(false)
@@ -19,25 +27,25 @@ export default function EditSpotPage({ params }: { params: { id: string; spotId:
   useEffect(() => {
     const fetchSpot = async () => {
       try {
-        const spots = await chargingSpotApi.getByStation(parseInt(params.id))
-        const spotData = spots.find(s => s.id === parseInt(params.spotId))
+        const spots = await chargingSpotApi.getByStation(parseInt(id))
+        const spotData = spots.find(s => s.id === parseInt(spotId))
         if (spotData) {
           setSpot(spotData)
         } else {
           toast.error('Spot not found')
-          router.push(`/dashboard/stations/${params.id}`)
+          router.push(`/dashboard/stations/${id}`)
         }
       } catch (error) {
         console.error('Error fetching spot:', error)
         toast.error('Failed to fetch spot details')
-        router.push(`/dashboard/stations/${params.id}`)
+        router.push(`/dashboard/stations/${id}`)
       }
     }
 
     if (user?.role === 'OPERATOR') {
       fetchSpot()
     }
-  }, [params.id, params.spotId, user?.role, router])
+  }, [id, spotId, user?.role, router])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -67,21 +75,44 @@ export default function EditSpotPage({ params }: { params: { id: string; spotId:
       return
     }
 
-    const spotData: ChargingSpot = {
-      id: spot.id,
-      station: spot.station,
-      powerKw: powerKwNum,
-      pricePerKwh: pricePerKwhNum,
-      chargingVelocity,
-      connectorType,
-      state
-    }
-
     try {
       setLoading(true)
-      await chargingSpotApi.update(spotData)
-      toast.success('Spot updated successfully')
-      router.push(`/dashboard/stations/${params.id}`)
+
+      // Check if only the status has changed
+      const onlyStatusChanged = 
+        powerKwNum === spot.powerKw &&
+        pricePerKwhNum === spot.pricePerKwh &&
+        chargingVelocity === spot.chargingVelocity &&
+        connectorType === spot.connectorType &&
+        state !== spot.state
+
+      if (onlyStatusChanged) {
+        // Use the new updateStatus method if only status changed
+        if (!spot.id) {
+          throw new Error('Spot ID is required')
+        }
+        const success = await chargingSpotApi.updateStatus(spot.id, state)
+        if (success) {
+          toast.success('Spot status updated successfully')
+          router.push(`/dashboard/stations/${id}`)
+        } else {
+          toast.error('Failed to update spot status')
+        }
+      } else {
+        // Use the full update method if other fields changed
+        const spotData: ChargingSpot = {
+          id: spot.id,
+          station: spot.station,
+          powerKw: powerKwNum,
+          pricePerKwh: pricePerKwhNum,
+          chargingVelocity,
+          connectorType,
+          state
+        }
+        await chargingSpotApi.update(spotData)
+        toast.success('Spot updated successfully')
+        router.push(`/dashboard/stations/${id}`)
+      }
     } catch (error) {
       console.error('Error updating spot:', error)
       if (error instanceof Error) {
@@ -97,7 +128,7 @@ export default function EditSpotPage({ params }: { params: { id: string; spotId:
   if (!user || user.role !== 'OPERATOR') {
     return (
       <div className="container mx-auto py-8 px-4">
-        <div className="text-center text-gray-500">You don't have permission to edit spots.</div>
+        <div className="text-center text-gray-500">You don&apos;t have permission to edit spots.</div>
       </div>
     )
   }
@@ -114,13 +145,13 @@ export default function EditSpotPage({ params }: { params: { id: string; spotId:
     <>
       <PageHeader 
         title="Edit Charging Spot" 
-        backUrl={`/dashboard/stations/${params.id}`}
+        backUrl={`/dashboard/stations/${id}`}
       />
       <FormLayout 
         title="Spot Details"
         onSubmit={handleSubmit}
         loading={loading}
-        cancelUrl={`/dashboard/stations/${params.id}`}
+        cancelUrl={`/dashboard/stations/${id}`}
       >
         <div className="grid grid-cols-2 gap-4">
           <FormField

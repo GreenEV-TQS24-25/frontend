@@ -47,7 +47,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         throw new Error('Invalid login response')
       }
 
-      // Store the token in a cookie
+      // Store the token in both localStorage and cookie
+      localStorage.setItem('token', response.token)
       document.cookie = `token=${response.token}; path=/`
       
       setUser(response)
@@ -65,7 +66,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const logout = () => {
     setUser(null)
     localStorage.removeItem('user')
-    // Clear any other user-related data
+    localStorage.removeItem('token')
+    // Clear the token cookie
     document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
   }
 

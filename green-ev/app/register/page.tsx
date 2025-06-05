@@ -23,9 +23,10 @@ export default function RegisterPage() {
     setIsLoading(true)
 
     try {
-      const response = await userApi.create(formData)
+      const response = await userApi.register(formData)
       
-      // Store the token in a cookie
+      // Store the token in both localStorage and cookie
+      localStorage.setItem('token', response.token)
       document.cookie = `token=${response.token}; path=/`
       
       // Redirect to dashboard

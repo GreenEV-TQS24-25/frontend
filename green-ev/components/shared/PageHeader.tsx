@@ -13,7 +13,7 @@ interface PageHeaderProps {
 
 export function PageHeader({ title, backUrl, showEditButton, editUrl }: PageHeaderProps) {
   return (
-    <div className="flex items-center justify-between mb-8">
+    <div className="flex items-center justify-between m-4">
       <div className="flex items-center">
         <Link href={backUrl}>
           <Button variant="outline" className="mr-1 hover:bg-gray-100">
