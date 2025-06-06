@@ -88,7 +88,7 @@ export default function SchedulePage({ params }: PageProps) {
     try {
       setLoading(true)
       const sessionData: Session = {
-        uuid: crypto.randomUUID(),
+        // uuid: crypto.randomUUID(),
         startTime: selectedTime.toISOString(),
         duration: duration,
         chargingSpot: {
