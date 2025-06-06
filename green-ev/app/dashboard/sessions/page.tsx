@@ -160,6 +160,7 @@ export default function SessionsPage() {
       {selectedSessionId && (
         <PaymentModal
           isOpen={isPaymentModalOpen}
+          amount={sessions.length > 0 ? sessions.find(s => s.id === selectedSessionId)?.totalCost ?? 0 : 0}
           onClose={() => setIsPaymentModalOpen(false)}
           sessionId={selectedSessionId}
           onSuccess={handlePaymentSuccess}
