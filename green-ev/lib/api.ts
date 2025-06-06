@@ -9,7 +9,7 @@ import {
   StationsSpots,
 } from './types'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://deti-tqs-20.ua.pt'  //'http://localhost'
 
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
