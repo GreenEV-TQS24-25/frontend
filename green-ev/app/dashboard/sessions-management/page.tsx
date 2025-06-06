@@ -29,6 +29,7 @@ export default function SessionsManagementPage() {
     if (selectedStation) {
       fetchSessions()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedStation, selectedSpot])
 
   const fetchStations = async () => {
