@@ -61,7 +61,7 @@ export interface ChargingSpot {
 
 export interface Session {
   id?: number;
-  uuid: string;
+  uuid?: string;
   vehicle?: Vehicle;
   chargingSpot?: ChargingSpot;
   startTime: string; // ISO date-time string
