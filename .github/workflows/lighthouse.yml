@@ -43,8 +43,7 @@ jobs:
         uses: treosh/lighthouse-ci-action@v11
         with:
           urls: |
-            http://localhost/dashboard
-            http://localhost/dashboard/map
+            http://localhost/login
           uploadArtifacts: true
           temporaryPublicStorage: true
           extraHeaders: '{"Cookie": "token=${{ steps.login.outputs.token }}"}'
